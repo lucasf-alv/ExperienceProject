@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607201500-create-table-activities
+      author: Lucas
+
+      changes:
+        - createTable:
+            tableName: activities
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: confirmation_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: image
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: scheduled_Date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: criated_At
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: deleted_At
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: completed_At
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: private
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: creator_id
+                  type: BIGINT
+
+              - column:
+                  name: activity_type
+                  type: BIGINT
+
+
+        - addForeignKeyConstraint:
+            baseTableName: activities
+            baseColumnNames: creator_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_activity_creator
+
+        - addForeignKeyConstraint:
+            baseTableName: activities
+            baseColumnNames: activity_type
+            referencedTableName: activity_type
+            referencedColumnNames: id
+            constraintName: fk_activity_type

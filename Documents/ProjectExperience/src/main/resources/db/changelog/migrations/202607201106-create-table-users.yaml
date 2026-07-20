@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607202000-create-table-users
+      author: Lucas
+
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: cpf
+                  type: VARCHAR(14)
+
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+
+              - column:
+                  name: avatar
+                  type: VARCHAR(255)
+
+              - column:
+                  name: xp
+                  type: INTEGER
+
+              - column:
+                  name: level
+                  type: INTEGER
+
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP

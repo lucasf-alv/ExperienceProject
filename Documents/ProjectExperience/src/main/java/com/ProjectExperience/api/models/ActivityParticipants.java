@@ -1,11 +1,17 @@
 package com.ProjectExperience.api.models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "activityPartipants")
+@Table(name = "activity_participants")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ActivityParticipants {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +24,7 @@ public class ActivityParticipants {
     private User user;
     @Column(name = "Approved")
     private Boolean approved;
-    @Column(name ="confirmated_At")
-    private LocalDateTime confirmated_At;
+    @Column(name ="confirmed_at")
+    private LocalDateTime confirmed_at;
 
 }

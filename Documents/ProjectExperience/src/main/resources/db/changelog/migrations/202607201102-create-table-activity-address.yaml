@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607201600-create-table-activity-address
+      author: Lucas
+
+      changes:
+        - createTable:
+            tableName: activity_address
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: activity_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: latitude
+                  type: DOUBLE PRECISION
+
+              - column:
+                  name: longitude
+                  type: DOUBLE PRECISION
+
+
+        - addForeignKeyConstraint:
+            baseTableName: activity_address
+            baseColumnNames: activity_id
+            referencedTableName: activities
+            referencedColumnNames: id
+            constraintName: fk_activity_address_activity

@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607201400-create-table-achievements
+      author: Lucas
+
+      changes:
+        - createTable:
+            tableName: achievements
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: criterion
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

@@ -1,16 +1,22 @@
 package com.ProjectExperience.api.models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "userAchiviements")
-public class UserAchiviements {
-    @id
+@Table(name = "user_achievements")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserAchievements {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "achiviement_id")
-    private Achiviements achiviement;
+    @JoinColumn(name = "achievement_id")
+    private Achievements achievement;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

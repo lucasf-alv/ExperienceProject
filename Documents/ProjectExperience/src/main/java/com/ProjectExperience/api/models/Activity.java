@@ -1,6 +1,7 @@
 package com.ProjectExperience.api.models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +9,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "activities")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +41,7 @@ public class Activity {
     private User creator;
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
     private ActivityAddress activityAddress;
-    @OneToMany(mappedBy = "activities",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL)
     private List<ActivityParticipants> participants = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "activity_type")

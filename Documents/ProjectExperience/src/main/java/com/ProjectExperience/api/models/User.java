@@ -1,13 +1,19 @@
 package com.ProjectExperience.api.models;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="user")
+@Table(name ="users")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +37,7 @@ public class User {
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Preferences> preferences = new ArrayList<>();
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserAchiviements> userAchiviements = new ArrayList<>();
+    private List<UserAchievements> userAchiviements = new ArrayList<>();
     @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activity> activities = new ArrayList<>();
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)

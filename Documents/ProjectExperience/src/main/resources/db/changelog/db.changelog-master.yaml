@@ -1,0 +1,35 @@
+databaseChangeLog:
+
+  - include:
+      file: migrations/202607201106-create-table-users.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201104-create-table-activity-type.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201100-create-table-achievements.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201101-create-table-activity.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201102-create-table-activity-address.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201103-create-table-activity-participants.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201105-create-table-preferences.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: migrations/202607201107-create-table-user-achievements.yaml
+      relativeToChangelogFile: true
+
+

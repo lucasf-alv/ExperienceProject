@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607201700-create-table-activity-participants
+      author: Lucas
+
+      changes:
+        - createTable:
+            tableName: activity_participants
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: activity_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: approved
+                  type: BOOLEAN
+
+              - column:
+                  name: confirmed_at
+                  type: TIMESTAMP
+
+
+        - addForeignKeyConstraint:
+            baseTableName: activity_participants
+            baseColumnNames: activity_id
+            referencedTableName: activities
+            referencedColumnNames: id
+            constraintName: fk_participant_activity
+
+
+        - addForeignKeyConstraint:
+            baseTableName: activity_participants
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_participant_user
