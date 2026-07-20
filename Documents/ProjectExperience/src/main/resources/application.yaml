@@ -20,3 +20,10 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
+aws:
+  s3:
+    region: us-east-1
+    bucket: cars-photos
+    endpoint: http://localhost:4566
+    access-key: test
+    secret-key: test

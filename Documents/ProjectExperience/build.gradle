@@ -30,6 +30,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+	implementation 'software.amazon.awssdk:s3:2.31.67'
+	implementation 'software.amazon.awssdk:auth:2.31.67'
+	implementation 'software.amazon.awssdk:regions:2.31.67'
 }
 
 tasks.named('test') {
