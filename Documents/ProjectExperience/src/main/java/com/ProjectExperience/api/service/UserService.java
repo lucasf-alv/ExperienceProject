@@ -16,63 +16,83 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 @Service
 @AllArgsConstructor
-public class UserService{
-    private final  UserRepository userRepository;
+public class UserService {
+
+    private final UserRepository userRepository;
     private final PreferenceRepository preferenceRepository;
-    private final  S3Client s3Client;
+    private final S3Client s3Client;
     private final S3Properties s3Properties;
 
+    // ==========================
+    // BUSCAR USUÁRIO
+    // ==========================
 
-    // Buscar usuário //
-    public User findUser(Long id){
-        return userRepository.findById(id).orElseThrow(()-> new UserNotFound("User not found"));
-
-    }
-    // Listar preferencias //
-    public List<Preferences> listPreferences(Long id){
-        User user_find = findUser(id);
-        return user_find.getPreferences();
+    public User findDataUser(User loggedUser) {
+        return loggedUser;
 
     }
-    // Adicionar preferencias//
-    public User updatePreferences(Long userId, List<Long> preferencesIds) {
 
-        User user = findUser(userId);
+    // ==========================
+    // PREFERÊNCIAS
+    // ==========================
+
+    public List<Preferences> listPreferences(User loggedUser) {
+
+        return loggedUser.getPreferences();
+    }
+
+    public User updatePreferences(User loggedUser,
+                                  List<Long> preferenceIds) {
 
         List<Preferences> preferences =
-                preferenceRepository.findAllById(preferencesIds);
+                preferenceRepository.findAllById(preferenceIds);
 
-        user.setPreferences(preferences);
+        loggedUser.setPreferences(preferences);
 
-        return userRepository.save(user);
+        return userRepository.save(loggedUser);
     }
-    // Atualizar dados do usuário//
-    public User updateDataUser(Long id, UpdateUserDto dto){
-        User user = findUser(id);
-        user.setName((dto.name()));
-        user.setEmail(dto.email());
-        return userRepository.save(user);
 
+    // ==========================
+    // DADOS DO USUÁRIO
+    // ==========================
+
+    public User updateData(User loggedUser,
+                           UpdateUserDto dto) {
+
+        loggedUser.setName(dto.name());
+        loggedUser.setEmail(dto.email());
+
+        if (dto.password() != null && !dto.password().isBlank()) {
+
+            loggedUser.setPassword(
+                    dto.password()
+            );
+        }
+
+        return userRepository.save(loggedUser);
     }
-    // Atualizar foto do usuário //
-    private void uploadPhotoUser(User user, MultipartFile file) {
 
-        if (file == null || file.isEmpty()) {
-            throw new PhotoError("Arquivo inválido.");
-        }
-        String extension_ = getExtension(file.getOriginalFilename()).toLowerCase();
+    // ==========================
+    // FOTO
+    // ==========================
 
-        if (!extension_.equals(".png")
-                && !extension_.equals(".jpg")
-                && !extension_.equals(".jpeg")) {
+    public User updateAvatar(User loggedUser,
+                             MultipartFile file) {
 
-            throw new PhotoError("A foto deve ser PNG ou JPG.");
-        }
+        uploadPhoto(loggedUser, file);
+
+        return loggedUser;
+    }
+
+    private void uploadPhoto(User user,
+                             MultipartFile file) {
+
+        validateImage(file);
 
         try {
 
@@ -85,45 +105,77 @@ public class UserService{
                             + UUID.randomUUID()
                             + extension;
 
-            PutObjectRequest request = PutObjectRequest.builder()
-                    .bucket(s3Properties.getBucket())
-                    .key(photoId)
-                    .contentType(file.getContentType())
-                    .build();
+            PutObjectRequest request =
+                    PutObjectRequest.builder()
+                            .bucket(s3Properties.getBucket())
+                            .key(photoId)
+                            .contentType(file.getContentType())
+                            .build();
 
             s3Client.putObject(
                     request,
                     RequestBody.fromBytes(file.getBytes())
             );
 
-            String photoUrl =
+            String url =
                     s3Properties.getEndpoint()
                             + "/"
                             + s3Properties.getBucket()
                             + "/"
                             + photoId;
 
-            user.setAvatar(photoUrl);
+            user.setAvatar(url);
 
             userRepository.save(user);
 
         } catch (IOException e) {
-            throw new PhotoError("Falha ao enviar foto: " + e.getMessage());
+
+            throw new PhotoError(
+                    "Falha ao enviar imagem."
+            );
         }
     }
-    public User updateAvatar(Long id, MultipartFile file){
 
-        User user = findUser(id);
+    // ==========================
+    // DESATIVAR CONTA
+    // ==========================
 
-        uploadPhotoUser(user, file);
+    public void deactivateAccount(User loggedUser) {
 
-        return user;
+        loggedUser.setDeletedAt(LocalDateTime.now());
+
+        userRepository.save(loggedUser);
     }
 
+    // ==========================
+    // AUXILIARES
+    // ==========================
 
-    private String getExtension(String fileName){
+    private void validateImage(MultipartFile file) {
 
-        if(fileName == null || !fileName.contains(".")){
+        if (file == null || file.isEmpty()) {
+
+            throw new PhotoError("Arquivo inválido.");
+        }
+
+        String extension =
+                getExtension(file.getOriginalFilename())
+                        .toLowerCase();
+
+        if (!extension.equals(".png")
+                && !extension.equals(".jpg")
+                && !extension.equals(".jpeg")) {
+
+            throw new PhotoError(
+                    "A imagem deve ser um arquivo PNG ou JPG."
+            );
+        }
+    }
+
+    private String getExtension(String fileName) {
+
+        if (fileName == null || !fileName.contains(".")) {
+
             return "";
         }
 
@@ -131,11 +183,5 @@ public class UserService{
                 fileName.lastIndexOf(".")
         );
     }
-    // Deletar usuário //
-    public  void deleteUser(Long id){
-        userRepository.deleteById(id);
-    }
+
 }
-
-
-
