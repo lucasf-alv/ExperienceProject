@@ -140,7 +140,7 @@ public class UserService {
     // DESATIVAR CONTA
     // ==========================
 
-    public void deactivateAccount(User loggedUser) {
+    public void desactivateAccount(User loggedUser) {
 
         loggedUser.setDeletedAt(LocalDateTime.now());
 
