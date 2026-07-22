@@ -27,3 +27,9 @@ aws:
     endpoint: http://localhost:4566
     access-key: test
     secret-key: test
+app:
+  jwt:
+    secret: EIX0nTZL9f6TQ0Yd8eQ4mB+Hf9AnlqkP0Yxv6mI4vUk=
+    expiration-ms: 86400000
+default:
+  avatar: https://localhost.localstack.cloud:4566/project-experience/defaults/default-avatar.png

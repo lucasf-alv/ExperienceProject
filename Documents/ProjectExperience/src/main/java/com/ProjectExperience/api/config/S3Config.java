@@ -11,7 +11,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URI;
 
 @Configuration
-@EnableConfigurationProperties(value = {S3Properties.class})
+@EnableConfigurationProperties(value = {S3Properties.class, JwtProperties.class})
 public class S3Config {
     @Bean
     public S3Client s3client(S3Properties properties){
