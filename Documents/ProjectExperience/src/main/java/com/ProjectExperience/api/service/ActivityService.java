@@ -1,7 +1,9 @@
 package com.ProjectExperience.api.service;
 
+import com.ProjectExperience.api.config.S3Properties;
 import com.ProjectExperience.api.dto.CheckInDto;
 import com.ProjectExperience.api.dto.UpdateActivityDto;
+import com.ProjectExperience.api.exceptions.PhotoError;
 import com.ProjectExperience.api.exceptions.UserNotFound;
 import com.ProjectExperience.api.models.*;
 import com.ProjectExperience.api.repository.ActivityParcipantsRepository;
@@ -12,7 +14,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +32,9 @@ public class ActivityService {
     private final ActivityTypeRepository activityTypeRepository;
     private final ActivityParcipantsRepository activityParticipantsRepository;
     private final UserRepository userRepository;
+    private final S3Client s3Client;
+    private final S3Properties s3Properties;
+
 
     // ==========================
     // LISTAGENS
@@ -72,10 +82,6 @@ public class ActivityService {
         );
     }
 
-    // ==========================
-    // PARTICIPANTES
-    // ==========================
-
     public List<User> findAllUsersByActivityId(Long activityId) {
 
         Activity activity = activityRepository.findById(activityId)
@@ -93,13 +99,16 @@ public class ActivityService {
     // CRIAR
     // ==========================
 
-    public void createActivity(Activity activity, User loggedUser) {
+    public void createActivity(Activity activity, User loggedUser, MultipartFile file) {
 
         activity.setCreator(loggedUser);
         activity.setCriated_At(LocalDateTime.now());
         activity.setPrivate(false);
         activity.setConfirmation_code(UUID.randomUUID().toString().substring(0,8));
+        uploadPhoto(activity,file);
+
     }
+
 
     // ==========================
     // INSCRIÇÃO
@@ -126,7 +135,7 @@ public class ActivityService {
     // ==========================
 
     public Activity updateActivity(Long activityId,
-                                   UpdateActivityDto dto) {
+                                   UpdateActivityDto dto,MultipartFile file) {
 
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() ->
@@ -146,8 +155,8 @@ public class ActivityService {
         activity.setDescription(dto.description());
         activity.setScheduled_Date(dto.scheduleDate());
         activity.setPrivate(dto.Private());
-        activity.setImage(dto.image());
         activity.setActivityType(type);
+        uploadPhoto(activity,file);
 
         return activityRepository.save(activity);
     }
@@ -285,4 +294,89 @@ public class ActivityService {
 
         activityRepository.save(activity);
     }
+    //======================
+    // VALIDAÇÃO DA FOTO
+    // =====================
+    private void validateImage(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+
+            throw new PhotoError("Arquivo inválido.");
+        }
+
+        String extension =
+                getExtension(file.getOriginalFilename())
+                        .toLowerCase();
+
+        if (!extension.equals(".png")
+                && !extension.equals(".jpg")
+                && !extension.equals(".jpeg")) {
+
+            throw new PhotoError(
+                    "A imagem deve ser um arquivo PNG ou JPG."
+            );
+        }
+    }
+
+    private String getExtension(String fileName) {
+
+        if (fileName == null || !fileName.contains(".")) {
+
+            return "";
+        }
+
+        return fileName.substring(
+                fileName.lastIndexOf(".")
+        );
+    }
+    // =========================
+    //       FOTO
+    //========================
+    private void uploadPhoto(Activity activity,
+                             MultipartFile file) {
+
+        validateImage(file);
+
+        try {
+
+            String extension = getExtension(file.getOriginalFilename());
+
+            String photoId =
+                    "users/"
+                            + activity.getId()
+                            + "/"
+                            + UUID.randomUUID()
+                            + extension;
+
+            PutObjectRequest request =
+                    PutObjectRequest.builder()
+                            .bucket(s3Properties.getBucket())
+                            .key(photoId)
+                            .contentType(file.getContentType())
+                            .build();
+
+            s3Client.putObject(
+                    request,
+                    RequestBody.fromBytes(file.getBytes())
+            );
+
+            String url =
+                    s3Properties.getEndpoint()
+                            + "/"
+                            + s3Properties.getBucket()
+                            + "/"
+                            + photoId;
+
+            activity.setImage(url);
+
+            activityRepository.save(activity);
+
+        } catch (IOException e) {
+
+            throw new PhotoError(
+                    "Falha ao enviar imagem."
+            );
+        }
+    }
+
 }
