@@ -151,7 +151,8 @@ public class ActivityController {
         Activity activity = activityService.updateActivity(
                 activityId,
                 dto,
-                file
+                file,
+                authenticatedUser.getUser()
         );
 
         return ResponseEntity.ok(activity);

@@ -18,9 +18,9 @@ public class GlobalExceptionHandler {
     //==============================================================================
     //                      E1: CAMPOS OBRIGATÓRIOS
     //==============================================================================
-    @ExceptionHandler(CorrectFieldsError.class)
+    @ExceptionHandler(IncorrectFieldsError.class)
     public ResponseEntity<ApiError> handleCorrectFieldsError(
-            CorrectFieldsError ex,
+            IncorrectFieldsError ex,
             HttpServletRequest request) {
 
         ApiError apiError = new ApiError(
@@ -228,9 +228,9 @@ public class GlobalExceptionHandler {
     //=============================================================================
     //            E12: NÃO É POSSÍVEL SE INSCREVER EM UMA ATIVIDADE CONCLUIDA
     //==============================================================================
-    @ExceptionHandler(ActivityDuplicateError.class)
-    public ResponseEntity<ApiError> handleActivityDuplicateError(
-            ActivityDuplicateError ex,
+    @ExceptionHandler(ActivityCompletedError.class)
+    public ResponseEntity<ApiError> handleActivityCompletedError(
+            ActivityCompletedError ex,
             HttpServletRequest request) {
 
         ApiError apiError = new ApiError(

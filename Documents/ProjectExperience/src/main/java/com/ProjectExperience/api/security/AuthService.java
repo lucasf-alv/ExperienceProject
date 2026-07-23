@@ -4,12 +4,14 @@ import com.ProjectExperience.api.config.DefaultProperties;
 import com.ProjectExperience.api.dto.JwtResponseDto;
 import com.ProjectExperience.api.dto.LoginDto;
 import com.ProjectExperience.api.dto.RegisterDto;
+import com.ProjectExperience.api.exceptions.*;
 import com.ProjectExperience.api.models.User;
 import com.ProjectExperience.api.repository.UserRepository;
 import com.ProjectExperience.api.security.AuthenticatedUser;
 import com.ProjectExperience.api.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,21 @@ public class AuthService {
 
     public void register(RegisterDto dto) {
 
+        // Lança E1: informe os campos obrigatórios corretamente //
+        if (dto.name() == null || dto.name().isBlank() ||
+                dto.email() == null || dto.email().isBlank() ||
+                dto.cpf() == null || dto.cpf().isBlank() ||
+                dto.password() == null || dto.password().isBlank()) {
+
+            throw new IncorrectFieldsError("Informe os campos obrigatórios corretamente.");
+        }
+
+        // Lança E3 : Email ou Cpf já pertence a outro usuário //
         if (userRepository.existsByEmail(dto.email())
                 || userRepository.existsByCpf(dto.cpf())) {
 
-            throw new RuntimeException(
-                    "O e-mail ou CPF informado já pertence a outro usuário.");
+            throw new EmailCpfError("Email ou cpf informado já pertence a outro usuário");
+
         }
 
         User user = User.builder()
@@ -55,22 +67,31 @@ public class AuthService {
     // ==========================
 
     public JwtResponseDto login(LoginDto dto) {
+        // Lança E5: Senha Incorreta  //
+        try {
 
-        authenticationManager.authenticate(
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            dto.email(),
+                            dto.password()
+                    )
+            );
 
-                new UsernamePasswordAuthenticationToken(
-                        dto.email(),
-                        dto.password()
-                )
-        );
-
+        } catch (BadCredentialsException e) {
+            throw new IncorrectPasswordError("Senha incorreta.");
+        }
+        // Lança E4: Usuário não encontrado //
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new UserNotFoundError("Usuário não encontrado."));
 
         String token = jwtService.generateToken(
                 new AuthenticatedUser(user)
         );
+        // Lança E6: Essa conta foi desativada e não pode ser Usada//
+        if(user.getDeletedAt() != null){
+            throw new DesactivateAccountError("Essa conta foi desativada e não pode ser usada");
+        }
 
         return new JwtResponseDto(
                 token,

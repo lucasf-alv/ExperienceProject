@@ -3,7 +3,7 @@ package com.ProjectExperience.api.service;
 import com.ProjectExperience.api.config.S3Properties;
 import com.ProjectExperience.api.dto.CheckInDto;
 import com.ProjectExperience.api.dto.UpdateActivityDto;
-import com.ProjectExperience.api.exceptions.PhotoError;
+import com.ProjectExperience.api.exceptions.*;
 import com.ProjectExperience.api.models.*;
 import com.ProjectExperience.api.repository.ActivityParcipantsRepository;
 import com.ProjectExperience.api.repository.ActivityRepository;
@@ -113,6 +113,7 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Tipo de atividade não encontrado"));
 
+
         ActivityAddress address = new ActivityAddress();
         address.setLatitude(dto.latitute());
         address.setLongitude(dto.longitude());
@@ -154,7 +155,26 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
 
+        // Lança E7: Usuário já é participante da atividade
         ActivityParticipants participant = new ActivityParticipants();
+        if (activityParticipantsRepository.existsByActivityIdAndUserId(
+                activityId,
+                loggedUser.getId())) {
+
+            throw new ActivityRegisterError(
+                    "Você já se registrou nessa atividade."
+            );
+        }
+        // Lança E8: O criador não pode se inscrever como participante
+        if (activity.getCreator().getId().equals(loggedUser.getId())) {
+            throw new CreatorParticipantError(
+                    "O criador da atividade não pode se inscrever como participante."
+            );
+        }
+        // Lança E12: Não é possível se inscrever em uma atividade duplicada
+        if(activity.getCompleted_At() != null){
+            throw new ActivityCompletedError("Não é possível se inscrever em uma atividade concluida");
+        }
 
         participant.setActivity(activity);
         participant.setUser(loggedUser);
@@ -168,7 +188,7 @@ public class ActivityService {
     // ==========================
 
     public Activity updateActivity(Long activityId,
-                                   UpdateActivityDto dto,MultipartFile file) {
+                                   UpdateActivityDto dto,MultipartFile file,User loggedUser) {
 
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() ->
@@ -178,6 +198,11 @@ public class ActivityService {
                 .findByName(dto.type())
                 .orElseThrow(() ->
                         new RuntimeException("Tipo não encontrado"));
+        // Lança E14: Apenas o criador da atividade pode edita-lá
+        if(!activity.getCreator().equals(loggedUser)){
+            throw new EditActivityError("Apenas o criador da atividade pode edita-la");
+
+        }
 
         ActivityAddress address = activity.getActivityAddress();
 
@@ -203,6 +228,10 @@ public class ActivityService {
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
+        //Lança E17: Apenas o criador da atividade pode conclui-lá
+        if(!activity.getCreator().equals(loggedUser)){
+            throw new ConcludeActivityError("Apenas o criador da atividade pode aprovar participantes");
+        }
 
         activity.setCompleted_At(LocalDateTime.now());
         activity.setPrivate(Boolean.TRUE);
@@ -220,6 +249,10 @@ public class ActivityService {
                 activityParticipantsRepository.findById(participantId)
                         .orElseThrow(() ->
                                 new RuntimeException("Participante não encontrado"));
+        //Lança E16: Apenas o criador da atividade pode aprovar participantes
+        if(!participant.getActivity().getCreator().equals(loggedUser)){
+            throw new ApproveParticipantsError("Apenas o criador da atividade pode aprovar participantes");
+        }
 
         participant.setApproved(true);
 
@@ -239,9 +272,9 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
 
-        // E13 - Não pode fazer check-in em atividade concluída
+        // Lança E13: Não é possível confirmar presença em uma atividade concluida //
         if (activity.getCompleted_At() != null) {
-            throw new RuntimeException("Não é possível confirmar presença em uma atividade concluída.");
+            throw new ConfirmationConcludeActivityError("Não é possível confirmar presença em uma atividade concluída.");
         }
 
         // Busca a inscrição do usuário nessa atividade
@@ -251,18 +284,22 @@ public class ActivityService {
                         .orElseThrow(() ->
                                 new RuntimeException("Usuário não está inscrito na atividade"));
 
-        // E9 - Participante precisa estar aprovado
+        // lança E9: Participante precisa ser aprovado //
         if (!participant.getApproved()) {
-            throw new RuntimeException(
+            throw new CheckInError(
                     "Apenas participantes aprovados na atividade podem fazer check-in.");
         }
 
 
-        // E10 - Código incorreto
+        // lança  E10: Código incorreto //
         if (!activity.getConfirmation_code()
                 .equals(dto.confirmationCode())) {
 
-            throw new RuntimeException("Código de confirmação incorreto.");
+            throw new IncorrectConfirmationCodeError( "Código de confirmação incorreto.");
+        }
+        // lança E11: Confirmação duplicada na atividade//
+        if(participant.getConfirmed_at() != null){
+            throw new ConfirmationActivityError("Você já confirmou sua presença na atividade");
         }
 
         // Marca presença
@@ -298,9 +335,9 @@ public class ActivityService {
                         .orElseThrow(() ->
                                 new RuntimeException("Usuário não está inscrito nesta atividade"));
 
-        // E18
+        // Lança E18: Não é possível confirmar cancelar sua inscrição pois sua presença já foi confirmada
         if (participant.getConfirmed_at() != null) {
-            throw new RuntimeException(
+            throw new CancelSubscribeError(
                     "Não é possível cancelar sua inscrição, pois sua presença já foi confirmada."
             );
         }
@@ -317,9 +354,9 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
 
-        // E15
+        // Lança E15: Apenas o criador da atividade pode exclui-lá
         if (!activity.getCreator().getId().equals(loggedUser.getId())) {
-            throw new RuntimeException(
+            throw new DeleteActivityError(
                     "Apenas o criador da atividade pode excluí-la.");
         }
 

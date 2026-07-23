@@ -1,13 +1,11 @@
-
-
 package com.ProjectExperience.api.config;
 
+import com.ProjectExperience.api.security.JwtAuthenticationEntryPoint;
 import com.ProjectExperience.api.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -30,11 +29,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(authenticationEntryPoint)
+                )
 
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(
                                 "/auth/**",
                                 "/v3/api-docs/**",
@@ -43,9 +45,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .anyRequest().authenticated()
-                )
-
-                .httpBasic(Customizer.withDefaults());
+                );
 
         http.addFilterBefore(
                 jwtAuthenticationFilter,
