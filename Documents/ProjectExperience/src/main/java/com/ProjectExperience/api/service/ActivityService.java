@@ -47,6 +47,9 @@ public class ActivityService {
     public Page<Activity> listActivities(Pageable pageable) {
         return activityRepository.findAll(pageable);
     }
+    public List<Activity> listAllActivities() {
+        return activityRepository.findAll();
+    }
 
     public Page<Activity> findActivitiesCreatedByUser(User loggedUser,
                                                       Pageable pageable) {
@@ -99,14 +102,45 @@ public class ActivityService {
     // CRIAR
     // ==========================
 
-    public void createActivity(Activity activity, User loggedUser, MultipartFile file) {
+    public Activity createActivity(
+            UpdateActivityDto dto,
+            User loggedUser,
+            MultipartFile file
+    ) {
+
+        Activity activity = new Activity();
+
+        ActivityType type = activityTypeRepository.findByName(dto.type())
+                .orElseThrow(() ->
+                        new RuntimeException("Tipo de atividade não encontrado"));
+
+        ActivityAddress address = new ActivityAddress();
+        address.setLatitude(dto.latitute());
+        address.setLongitude(dto.longitude());
+
+        activity.setTitle(dto.title());
+        activity.setDescription(dto.description());
+        activity.setScheduled_Date(dto.scheduleDate());
+        activity.setActivityType(type);
+        activity.setActivityAddress(address);
 
         activity.setCreator(loggedUser);
         activity.setCriated_At(LocalDateTime.now());
-        activity.setPrivate(false);
-        activity.setConfirmation_code(UUID.randomUUID().toString().substring(0,8));
-        uploadPhoto(activity,file);
 
+        activity.setPrivate(
+                dto.Private() != null ? dto.Private() : false
+        );
+
+        activity.setConfirmation_code(
+                UUID.randomUUID()
+                        .toString()
+                        .substring(0, 8)
+                        .toUpperCase()
+        );
+
+        uploadPhoto(activity, file);
+
+        return activityRepository.save(activity);
     }
 
 
@@ -165,7 +199,7 @@ public class ActivityService {
     // CONCLUIR
     // ==========================
 
-    public Activity concludeActivity(Long activityId) {
+    public Activity concludeActivity(Long activityId, User loggedUser) {
 
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() ->
@@ -181,7 +215,7 @@ public class ActivityService {
     // APROVAR PARTICIPANTE
     // ==========================
 
-    public void approveParticipant(Long participantId) {
+    public void approveParticipant(Long participantId,User loggedUser) {
 
         ActivityParticipants participant =
                 activityParticipantsRepository.findById(participantId)
