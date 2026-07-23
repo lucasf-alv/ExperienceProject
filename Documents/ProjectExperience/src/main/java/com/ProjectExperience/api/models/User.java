@@ -1,5 +1,6 @@
 package com.ProjectExperience.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,12 +35,16 @@ public class User {
     private Integer level;
     @Column(name = "deletedAt")
     private LocalDateTime deletedAt;
+    @JsonIgnore
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Preferences> preferences = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAchievements> userAchiviements = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activity> activities = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityParticipants> activityParticipants= new ArrayList<>();
 
