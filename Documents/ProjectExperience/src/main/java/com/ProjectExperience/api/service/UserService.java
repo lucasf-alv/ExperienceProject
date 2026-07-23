@@ -3,7 +3,6 @@ package com.ProjectExperience.api.service;
 import com.ProjectExperience.api.config.S3Properties;
 import com.ProjectExperience.api.dto.UpdateUserDto;
 import com.ProjectExperience.api.exceptions.PhotoError;
-import com.ProjectExperience.api.exceptions.UserNotFound;
 import com.ProjectExperience.api.models.Preferences;
 import com.ProjectExperience.api.models.User;
 import com.ProjectExperience.api.repository.PreferenceRepository;
