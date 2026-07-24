@@ -31,9 +31,9 @@ public class Activity {
     private LocalDateTime scheduled_Date;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime criated_At;
-    @Column(name = "deleted_at", nullable = false)
+    @Column(name = "deleted_at")
     private LocalDateTime deleted_At;
-    @Column(name = "completed_at", nullable = false)
+    @Column(name = "completed_at")
     private LocalDateTime completed_At ;
     @Column(name = "private", nullable = false)
     private Boolean Private;
@@ -42,7 +42,8 @@ public class Activity {
     private User creator;
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
     private ActivityAddress activityAddress;
-    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<ActivityParticipants> participants = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "activity_type")

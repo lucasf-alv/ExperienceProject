@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607240901
+      author: Lucas
+
+      changes:
+        - dropNotNullConstraint:
+            tableName: activities
+            columnName: deleted_at
+            columnDataType: timestamp
+
+        - dropNotNullConstraint:
+            tableName: activities
+            columnName: completed_at
+            columnDataType: timestamp

@@ -73,7 +73,7 @@ public class ActivityController {
     //==============================================================
     //            LISTA PARTICIPANTES DE UMA ATIVIDADE COM TABULAÇÃO
     //=============================================================
-    @GetMapping("/user/participants")
+    @GetMapping("/user/participant")
     public ResponseEntity<Page<ActivityParticipants>> findActivityParticipantsByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             Pageable pageable
@@ -85,7 +85,7 @@ public class ActivityController {
     //=================================================================
     //              LISTA TODOS OS PARTICIPANTES DE UMA ATIVIDADE
     //=================================================================
-    @GetMapping("/user/participants/all")
+    @GetMapping("/user/participant/all")
     public ResponseEntity<List<ActivityParticipants>> findAllActitivityPartipantsByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ){

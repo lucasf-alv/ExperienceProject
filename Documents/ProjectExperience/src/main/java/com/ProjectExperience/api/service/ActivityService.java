@@ -117,6 +117,7 @@ public class ActivityService {
         ActivityAddress address = new ActivityAddress();
         address.setLatitude(dto.latitute());
         address.setLongitude(dto.longitude());
+        address.setActivity(activity);
 
         activity.setTitle(dto.title());
         activity.setDescription(dto.description());

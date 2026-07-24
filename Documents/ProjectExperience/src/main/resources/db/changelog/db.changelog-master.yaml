@@ -34,5 +34,8 @@ databaseChangeLog:
   - include:
       file: migrations/202607231930-rename-activity-columns.yaml
       relativeToChangelogFile: true
+  - include:
+      file: migrations/202607240901-alter-activities-nullable-dates.yaml
+      relativeToChangelogFile: true
 
 
