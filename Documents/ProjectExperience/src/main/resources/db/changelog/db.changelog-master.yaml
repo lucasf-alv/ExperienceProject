@@ -31,5 +31,8 @@ databaseChangeLog:
   - include:
       file: migrations/202607201107-create-table-user-achievements.yaml
       relativeToChangelogFile: true
+  - include:
+      file: migrations/202607231930-rename-activity-columns.yaml
+      relativeToChangelogFile: true
 
 

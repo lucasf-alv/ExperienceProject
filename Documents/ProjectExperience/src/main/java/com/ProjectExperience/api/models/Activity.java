@@ -1,5 +1,6 @@
 package com.ProjectExperience.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,13 +27,13 @@ public class Activity {
     private String confirmation_code;
     @Column(name = "image", nullable = false)
     private String image ;
-    @Column(name ="scheduled_Date", nullable = false)
+    @Column(name ="scheduled_date", nullable = false)
     private LocalDateTime scheduled_Date;
-    @Column(name = "criated_At", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime criated_At;
-    @Column(name = "deleted_At", nullable = false)
+    @Column(name = "deleted_at", nullable = false)
     private LocalDateTime deleted_At;
-    @Column(name = "completed_At", nullable = false)
+    @Column(name = "completed_at", nullable = false)
     private LocalDateTime completed_At ;
     @Column(name = "private", nullable = false)
     private Boolean Private;

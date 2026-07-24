@@ -1,9 +1,7 @@
 spring:
-  application:
-    name: demo
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/bootcamp
+    url: jdbc:postgresql://localhost:5435/project_experience
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

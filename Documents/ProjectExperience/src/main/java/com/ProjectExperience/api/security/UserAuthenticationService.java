@@ -12,11 +12,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserAuthenticationService implements UserDetailsService {
 
+
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
+        System.out.println("EMAIL DO TOKEN: " + email);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->

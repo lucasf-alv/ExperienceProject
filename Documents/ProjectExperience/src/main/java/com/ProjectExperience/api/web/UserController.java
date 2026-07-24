@@ -5,6 +5,7 @@ import com.ProjectExperience.api.models.Preferences;
 import com.ProjectExperience.api.models.User;
 import com.ProjectExperience.api.security.AuthenticatedUser;
 import com.ProjectExperience.api.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.MediaType;
@@ -39,7 +40,7 @@ public class UserController {
     @GetMapping("/preferences")
     public ResponseEntity<List<Preferences>> listPreferences(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
-
+        System.out.println("ENTROU NO CONTROLLER");
         return ResponseEntity.ok(
                 userService.listPreferences(authenticatedUser.getUser())
         );

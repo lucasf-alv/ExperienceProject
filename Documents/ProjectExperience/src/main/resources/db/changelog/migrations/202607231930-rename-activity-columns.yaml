@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607231930
+      author: Lucas
+
+      changes:
+
+        - renameColumn:
+            tableName: activities
+            oldColumnName: scheduled_Date
+            newColumnName: scheduled_date
+            columnDataType: TIMESTAMP
+
+        - renameColumn:
+            tableName: activities
+            oldColumnName: criated_At
+            newColumnName: created_at
+            columnDataType: TIMESTAMP
+
+        - renameColumn:
+            tableName: activities
+            oldColumnName: deleted_At
+            newColumnName: deleted_at
+            columnDataType: TIMESTAMP
+
+        - renameColumn:
+            tableName: activities
+            oldColumnName: completed_At
+            newColumnName: completed_at
+            columnDataType: TIMESTAMP

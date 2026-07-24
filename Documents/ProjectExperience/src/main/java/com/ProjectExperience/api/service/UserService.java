@@ -3,10 +3,13 @@ package com.ProjectExperience.api.service;
 import com.ProjectExperience.api.config.S3Properties;
 import com.ProjectExperience.api.dto.UpdateUserDto;
 import com.ProjectExperience.api.exceptions.PhotoError;
+import com.ProjectExperience.api.models.ActivityType;
 import com.ProjectExperience.api.models.Preferences;
 import com.ProjectExperience.api.models.User;
+import com.ProjectExperience.api.repository.ActivityTypeRepository;
 import com.ProjectExperience.api.repository.PreferenceRepository;
 import com.ProjectExperience.api.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PreferenceRepository preferenceRepository;
+    private final ActivityTypeRepository activityTypeRepository;
     private final S3Client s3Client;
     private final S3Properties s3Properties;
 
@@ -42,7 +46,7 @@ public class UserService {
 
     public List<Preferences> listPreferences(User loggedUser) {
 
-        return loggedUser.getPreferences();
+        return preferenceRepository.findByUserId(loggedUser.getId());
     }
 
     public User updatePreferences(User loggedUser,

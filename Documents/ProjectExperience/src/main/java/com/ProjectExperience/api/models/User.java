@@ -35,17 +35,16 @@ public class User {
     private Integer level;
     @Column(name = "deletedAt")
     private LocalDateTime deletedAt;
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
     @JsonIgnore
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Preferences> preferences = new ArrayList<>();
-    @JsonIgnore
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<UserAchievements> userAchiviements = new ArrayList<>();
+    @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL)
     @JsonIgnore
-    @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activity> activities = new ArrayList<>();
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
     @JsonIgnore
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityParticipants> activityParticipants= new ArrayList<>();
 
 

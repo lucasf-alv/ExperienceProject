@@ -1,5 +1,6 @@
 package com.ProjectExperience.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
