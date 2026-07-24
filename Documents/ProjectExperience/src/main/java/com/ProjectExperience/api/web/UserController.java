@@ -93,6 +93,7 @@ public class UserController {
     //===================================================================================
     //                               DESATIVAR CONTA
     //==================================================================================
+    @DeleteMapping("/desactivate")
     public ResponseEntity<Void> desactivateAccount(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ){

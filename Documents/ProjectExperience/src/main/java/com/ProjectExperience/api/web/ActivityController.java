@@ -35,7 +35,7 @@ public class ActivityController {
     //=========================================================
     //                LISTA ATIVIDADES COM TABULAÇÃO
     //=======================================================
-    @GetMapping("/activities")
+    @GetMapping
     public ResponseEntity<Page<Activity>> listActivities(Pageable pageable) {
 
         return ResponseEntity.ok(

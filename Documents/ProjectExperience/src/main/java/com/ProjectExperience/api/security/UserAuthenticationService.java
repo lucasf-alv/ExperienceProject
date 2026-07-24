@@ -18,7 +18,6 @@ public class UserAuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        System.out.println("EMAIL DO TOKEN: " + email);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->

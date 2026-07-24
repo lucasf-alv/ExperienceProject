@@ -72,7 +72,6 @@ public class UserService {
                            UpdateUserDto dto) {
 
         loggedUser.setName(dto.name());
-        loggedUser.setEmail(dto.email());
 
         if (dto.password() != null && !dto.password().isBlank()) {
 
