@@ -60,14 +60,13 @@ public class UserController {
                 )
         );
     }
-
+    //=================================================================================
+    //                             ATUALIZAR FOTO
+    //=================================================================================
     @PutMapping(
             value = "/avatar",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    //=================================================================================
-    //                             ATUALIZAR FOTO
-    //=================================================================================
     public ResponseEntity<User> updateAvatar(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestParam("file") MultipartFile file) {
@@ -82,6 +81,7 @@ public class UserController {
     //=================================================================================
     //                              ATUALIZAR DADOS
     //===============================================================================
+    @PutMapping("/update")
     public ResponseEntity<User> updateData(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestBody UpdateUserDto dto

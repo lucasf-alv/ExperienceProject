@@ -1,0 +1,11 @@
+docker run -d \
+  --name localstack \
+  -p 4566:4566 \
+  -e SERVICES=s3 \
+  -e DEBUG=1 \
+  localstack/localstack     COMANDO PARA SUBIR O LOCALSTACK
+
+  docker exec -it project-experience-db psql -U postgres -d project_experience     COMANDO PARA SUBIR O BANCO (docker run project_experience)
+
+
+  docker exec localstack awslocal s3 mb s3://avatares COMANDO PARA O BUCKET  (docker run localstack)

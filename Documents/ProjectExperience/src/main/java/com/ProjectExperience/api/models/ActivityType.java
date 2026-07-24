@@ -24,6 +24,6 @@ public class ActivityType {
     private String description;
     @Column(name = "image",nullable = false)
     private String image;
-    @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL)
     private List<Activity> activityList = new ArrayList<>();
 }

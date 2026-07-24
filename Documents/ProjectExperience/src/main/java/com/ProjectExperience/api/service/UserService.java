@@ -55,9 +55,13 @@ public class UserService {
         List<Preferences> preferences =
                 preferenceRepository.findAllById(preferenceIds);
 
-        loggedUser.setPreferences(preferences);
+        preferences.forEach(preference ->
+                preference.setUser(loggedUser)
+        );
 
-        return userRepository.save(loggedUser);
+        preferenceRepository.saveAll(preferences);
+
+        return loggedUser;
     }
 
     // ==========================

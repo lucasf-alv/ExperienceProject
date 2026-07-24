@@ -21,10 +21,10 @@ spring:
 aws:
   s3:
     region: us-east-1
-    bucket: cars-photos
+    bucket: avatares
     endpoint: http://localhost:4566
-    access-key: test
-    secret-key: test
+    accessKey: test
+    secretKey: test
 app:
   jwt:
     secret: EIX0nTZL9f6TQ0Yd8eQ4mB+Hf9AnlqkP0Yxv6mI4vUk=
