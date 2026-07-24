@@ -37,5 +37,11 @@ databaseChangeLog:
   - include:
       file: migrations/202607240901-alter-activities-nullable-dates.yaml
       relativeToChangelogFile: true
+  - include:
+      file: migrations/202607241200-insert-achievements.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: migrations/202607241835-create-achievement-first-profile-photo.yaml
+      relativeToChangelogFile: true
 
 

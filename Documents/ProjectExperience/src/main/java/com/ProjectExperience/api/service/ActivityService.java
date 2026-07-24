@@ -5,10 +5,7 @@ import com.ProjectExperience.api.dto.CheckInDto;
 import com.ProjectExperience.api.dto.UpdateActivityDto;
 import com.ProjectExperience.api.exceptions.*;
 import com.ProjectExperience.api.models.*;
-import com.ProjectExperience.api.repository.ActivityParcipantsRepository;
-import com.ProjectExperience.api.repository.ActivityRepository;
-import com.ProjectExperience.api.repository.ActivityTypeRepository;
-import com.ProjectExperience.api.repository.UserRepository;
+import com.ProjectExperience.api.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +23,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class ActivityService {
-
+    private  final UserProgressService userProgressService;
     private final ActivityRepository activityRepository;
     private final ActivityTypeRepository activityTypeRepository;
     private final ActivityParcipantsRepository activityParticipantsRepository;
@@ -140,7 +137,14 @@ public class ActivityService {
         );
 
         uploadPhoto(activity, file);
-        return activityRepository.save(activity);
+        activityRepository.save(activity);
+        userProgressService.addXp(loggedUser, 30);
+
+        userProgressService.grantAchievement(
+                loggedUser,
+                "Primeira Atividade"
+        );
+        return  activity;
 
 
     }
@@ -240,7 +244,14 @@ public class ActivityService {
         activity.setCompleted_At(LocalDateTime.now());
         activity.setPrivate(Boolean.TRUE);
 
-        return activityRepository.save(activity);
+        activityRepository.save(activity);
+        userProgressService.addXp(activity.getCreator(), 40);
+
+        userProgressService.grantAchievement(
+                activity.getCreator(),
+                "Primeira Atividade Concluída"
+        );
+        return activity;
     }
 
     // ==========================
@@ -286,7 +297,7 @@ public class ActivityService {
                 activityParticipantsRepository
                         .findByActivityIdAndUserId(activityId, loggedUser.getId())
                         .orElseThrow(() ->
-                                new RuntimeException("Usuário não está inscrito na atividade"));
+                                new RuntimeException("Usuário não está inscrito na atividadcriouPrimeiraAtividadee"));
 
         // lança E9: Participante precisa ser aprovado //
         if (!participant.getApproved()) {
@@ -312,15 +323,22 @@ public class ActivityService {
         // Dá XP para o participante
         User participantUser = participant.getUser();
         participantUser.setXp(participantUser.getXp() + 50);
-
-        // Dá XP para o criador
         User creator = activity.getCreator();
-        creator.setXp(creator.getXp() + 20);
 
         // Salva tudo
         activityParticipantsRepository.save(participant);
         userRepository.save(participantUser);
         userRepository.save(creator);
+        // Dá XP ao criador
+        userProgressService.addXp(participantUser, 50);
+
+        userProgressService.addXp(activity.getCreator(), 20);
+        userProgressService.grantAchievement(
+                participantUser,
+                "Primeiro Check-In"
+        );
+
+
     }
     //=========================
     // UNSUBSCRIBE

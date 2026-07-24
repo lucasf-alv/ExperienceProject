@@ -3,6 +3,7 @@ package com.ProjectExperience.api.service;
 import com.ProjectExperience.api.config.S3Properties;
 import com.ProjectExperience.api.dto.UpdateUserDto;
 import com.ProjectExperience.api.exceptions.PhotoError;
+import com.ProjectExperience.api.exceptions.UserNotFoundError;
 import com.ProjectExperience.api.models.ActivityType;
 import com.ProjectExperience.api.models.Preferences;
 import com.ProjectExperience.api.models.User;
@@ -30,13 +31,15 @@ public class UserService {
     private final ActivityTypeRepository activityTypeRepository;
     private final S3Client s3Client;
     private final S3Properties s3Properties;
+    private final UserProgressService userProgressService;
 
     // ==========================
     // BUSCAR USUÁRIO
     // ==========================
 
     public User findDataUser(User loggedUser) {
-        return loggedUser;
+        return userRepository.findByIdWithAchievements(loggedUser.getId())
+                .orElseThrow(() -> new UserNotFoundError("Usuário não encontrado"));
 
     }
 
@@ -61,7 +64,8 @@ public class UserService {
 
         preferenceRepository.saveAll(preferences);
 
-        return loggedUser;
+        return userRepository.findByIdWithAchievements(loggedUser.getId())
+                .orElseThrow(() -> new UserNotFoundError("Usuário não encontrado"));
     }
 
     // ==========================
@@ -91,8 +95,12 @@ public class UserService {
                              MultipartFile file) {
 
         uploadPhoto(loggedUser, file);
-
-        return loggedUser;
+        userProgressService.grantAchievement(
+                loggedUser,
+                "Primeira Foto de Perfil"
+        );
+        return userRepository.findByIdWithAchievements(loggedUser.getId())
+                .orElseThrow(() -> new UserNotFoundError("Usuário não encontrado"));
     }
 
     private void uploadPhoto(User user,

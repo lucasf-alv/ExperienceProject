@@ -12,14 +12,17 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserAchievements {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "achievement_id")
     private Achievements achievement;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
-
 }

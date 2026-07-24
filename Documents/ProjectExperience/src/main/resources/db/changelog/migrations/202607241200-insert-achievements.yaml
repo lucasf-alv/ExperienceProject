@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607241200
+      author: Lucas
+
+      changes:
+        - insert:
+            tableName: achievements
+            columns:
+              - column:
+                  name: name
+                  value: "Primeira Atividade"
+
+              - column:
+                  name: criterion
+                  value: "Criou uma atividade pela primeira vez."
+
+        - insert:
+            tableName: achievements
+            columns:
+              - column:
+                  name: name
+                  value: "Primeiro Check-In"
+
+              - column:
+                  name: criterion
+                  value: "Confirmou presença em uma atividade pela primeira vez."
+
+        - insert:
+            tableName: achievements
+            columns:
+              - column:
+                  name: name
+                  value: "Primeira Atividade Concluída"
+
+              - column:
+                  name: name
+                  value: "Primeira Atividade Concluída"
+
+              - column:
+                  name: criterion
+                  value: "Concluiu uma atividade pela primeira vez."
+
+        - insert:
+            tableName: achievements
+            columns:
+              - column:
+                  name: name
+                  value: "Nível 2"
+
+              - column:
+                  name: criterion
+                  value: "Alcançou o nível 2."

@@ -38,8 +38,7 @@ public class User {
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Preferences> preferences = new ArrayList<>();
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JsonIgnore
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<UserAchievements> userAchiviements = new ArrayList<>();
     @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore

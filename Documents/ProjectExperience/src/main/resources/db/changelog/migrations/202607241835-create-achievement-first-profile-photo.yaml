@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607241835
+      author: Lucas
+      changes:
+        - insert:
+            tableName: achievements
+            columns:
+              - column:
+                  name: name
+                  value: Primeira Foto de Perfil
+              - column:
+                  name: criterion
+                  value: Alterou a foto de perfil pela primeira vez.
