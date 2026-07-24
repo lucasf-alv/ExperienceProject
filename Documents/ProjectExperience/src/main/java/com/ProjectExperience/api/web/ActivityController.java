@@ -138,7 +138,7 @@ public class ActivityController {
     //                ATUALIZA OS DADOS DE UMA ATIVIDADE
     //=======================================================================
     @PutMapping(
-            value = "/{activityId}",
+            value = "/{activityId}/update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<Activity> updateActivity(
@@ -170,7 +170,7 @@ public class ActivityController {
     //===============================================================
     //                APROVA UMA ATIVIDADE
     //===============================================================
-    @PutMapping("/participants/{participantId}/approve")
+    @PutMapping("/{participantId}/approve")
     public ResponseEntity<Void> approveParticipant(
             @PathVariable Long participantId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser

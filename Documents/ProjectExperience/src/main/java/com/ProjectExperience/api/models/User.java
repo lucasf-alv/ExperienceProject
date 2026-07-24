@@ -39,11 +39,12 @@ public class User {
     @JsonIgnore
     private List<Preferences> preferences = new ArrayList<>();
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<UserAchievements> userAchiviements = new ArrayList<>();
-    @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Activity> activities = new ArrayList<>();
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<ActivityParticipants> activityParticipants= new ArrayList<>();
 

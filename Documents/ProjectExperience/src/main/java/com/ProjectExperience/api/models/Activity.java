@@ -1,6 +1,7 @@
 package com.ProjectExperience.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,7 +43,7 @@ public class Activity {
     private User creator;
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
     private ActivityAddress activityAddress;
-    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ActivityParticipants> participants = new ArrayList<>();
     @ManyToOne

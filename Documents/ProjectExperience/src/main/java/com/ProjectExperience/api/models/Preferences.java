@@ -19,7 +19,7 @@ public class Preferences {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "type_id")
     private ActivityType activityType;
 }

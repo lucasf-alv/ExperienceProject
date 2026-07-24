@@ -1,5 +1,7 @@
 package com.ProjectExperience.api.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,7 @@ public class ActivityAddress {
     private Long id;
     @OneToOne
     @JoinColumn(name = "activity_id")
+    @JsonIgnore
     private Activity activity;
     @Column(name = "latitude")
     private Double latitude ;

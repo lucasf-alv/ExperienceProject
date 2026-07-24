@@ -140,8 +140,9 @@ public class ActivityService {
         );
 
         uploadPhoto(activity, file);
-
         return activityRepository.save(activity);
+
+
     }
 
 
@@ -172,13 +173,14 @@ public class ActivityService {
                     "O criador da atividade não pode se inscrever como participante."
             );
         }
-        // Lança E12: Não é possível se inscrever em uma atividade duplicada
+        // Lança E12: Não é possível se inscrever em uma atividade concluida
         if(activity.getCompleted_At() != null){
             throw new ActivityCompletedError("Não é possível se inscrever em uma atividade concluida");
         }
 
         participant.setActivity(activity);
         participant.setUser(loggedUser);
+        participant.setApproved(false);
 
         return activityParticipantsRepository.save(participant);
     }
@@ -200,9 +202,10 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Tipo não encontrado"));
         // Lança E14: Apenas o criador da atividade pode edita-lá
-        if(!activity.getCreator().equals(loggedUser)){
-            throw new EditActivityError("Apenas o criador da atividade pode edita-la");
-
+        if (!activity.getCreator().getId().equals(loggedUser.getId())) {
+            throw new EditActivityError(
+                    "Apenas o criador da atividade pode edita-la"
+            );
         }
 
         ActivityAddress address = activity.getActivityAddress();
@@ -230,8 +233,8 @@ public class ActivityService {
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
         //Lança E17: Apenas o criador da atividade pode conclui-lá
-        if(!activity.getCreator().equals(loggedUser)){
-            throw new ConcludeActivityError("Apenas o criador da atividade pode aprovar participantes");
+        if(!activity.getCreator().getId().equals(loggedUser.getId())){
+            throw new ConcludeActivityError("Apenas o criador da atividade pode concluir atividades");
         }
 
         activity.setCompleted_At(LocalDateTime.now());
@@ -251,7 +254,7 @@ public class ActivityService {
                         .orElseThrow(() ->
                                 new RuntimeException("Participante não encontrado"));
         //Lança E16: Apenas o criador da atividade pode aprovar participantes
-        if(!participant.getActivity().getCreator().equals(loggedUser)){
+        if(!participant.getActivity().getCreator().getId().equals(loggedUser.getId())){
             throw new ApproveParticipantsError("Apenas o criador da atividade pode aprovar participantes");
         }
 
@@ -413,8 +416,7 @@ public class ActivityService {
             String extension = getExtension(file.getOriginalFilename());
 
             String photoId =
-                    "users/"
-                            + activity.getId()
+                    "activities/"
                             + "/"
                             + UUID.randomUUID()
                             + extension;
@@ -440,13 +442,9 @@ public class ActivityService {
 
             activity.setImage(url);
 
-            activityRepository.save(activity);
-
         } catch (IOException e) {
 
-            throw new PhotoError(
-                    "Falha ao enviar imagem."
-            );
+            throw new PhotoError("Falha ao enviar imagem.");
         }
     }
 
