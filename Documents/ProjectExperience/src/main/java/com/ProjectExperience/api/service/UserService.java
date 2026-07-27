@@ -12,6 +12,7 @@ import com.ProjectExperience.api.repository.PreferenceRepository;
 import com.ProjectExperience.api.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -31,6 +32,7 @@ public class UserService {
     private final S3Client s3Client;
     private final S3Properties s3Properties;
     private final UserProgressService userProgressService;
+    private final PasswordEncoder passwordEncoder;
 
     // ==========================
     // BUSCAR USUÁRIO
@@ -79,7 +81,7 @@ public class UserService {
         if (dto.password() != null && !dto.password().isBlank()) {
 
             loggedUser.setPassword(
-                    dto.password()
+                    passwordEncoder.encode(dto.password())
             );
         }
 

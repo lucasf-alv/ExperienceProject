@@ -13,6 +13,7 @@ public class AuthenticatedUser implements UserDetails {
 
     private final User user;
 
+
     public Long getId() {
         return user.getId();
     }

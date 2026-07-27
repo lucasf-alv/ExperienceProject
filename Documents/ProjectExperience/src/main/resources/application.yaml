@@ -31,3 +31,8 @@ app:
     expiration-ms: 86400000
 default:
   avatar: https://localhost.localstack.cloud:4566/project-experience/defaults/default-avatar.png
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
