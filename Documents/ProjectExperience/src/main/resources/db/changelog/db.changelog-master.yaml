@@ -43,5 +43,8 @@ databaseChangeLog:
   - include:
       file: migrations/202607241835-create-achievement-first-profile-photo.yaml
       relativeToChangelogFile: true
+  - include:
+      file: migrations/20260724312-insert-activity-types.yaml
+      relativeToChangelogFile: true
 
 

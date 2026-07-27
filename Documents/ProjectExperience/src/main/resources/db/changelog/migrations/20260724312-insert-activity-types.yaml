@@ -1,0 +1,48 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: insert-default-activity-types
+      author: lucas
+
+      changes:
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Corrida
+              - column:
+                  name: description
+                  value: Atividade de corrida ao ar livre
+              - column:
+                  name: image
+                  value: corrida.png
+
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Ciclismo
+              - column:
+                  name: description
+                  value: Atividade de ciclismo
+              - column:
+                  name: image
+                  value: ciclismo.png
+
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Futebol
+              - column:
+                  name: description
+                  value: Partida de futebol entre participantes
+              - column:
+                  name: image
+                  value: futebol.png
