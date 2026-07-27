@@ -28,7 +28,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PreferenceRepository preferenceRepository;
-    private final ActivityTypeRepository activityTypeRepository;
     private final S3Client s3Client;
     private final S3Properties s3Properties;
     private final UserProgressService userProgressService;
@@ -198,7 +197,5 @@ public class UserService {
         );
     }
 
-    public User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(()->new RuntimeException("Usuario não encontrado"));
-    }
+
 }

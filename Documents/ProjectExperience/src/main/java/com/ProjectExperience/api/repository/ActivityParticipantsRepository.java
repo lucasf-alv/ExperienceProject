@@ -3,13 +3,12 @@ package com.ProjectExperience.api.repository;
 import com.ProjectExperience.api.models.ActivityParticipants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SearchResults;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ActivityParcipantsRepository extends JpaRepository<ActivityParticipants,Long> {
+public interface ActivityParticipantsRepository extends JpaRepository<ActivityParticipants,Long> {
     Page<ActivityParticipants> findByUserId(Long userId, Pageable pageable);
 
     List<ActivityParticipants> findByUserId(Long userId);

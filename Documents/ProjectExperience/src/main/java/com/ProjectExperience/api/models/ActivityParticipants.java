@@ -22,6 +22,7 @@ public class ActivityParticipants {
     private Activity activity;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     @Column(name = "Approved")
     private Boolean approved;

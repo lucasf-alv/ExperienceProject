@@ -26,7 +26,7 @@ public class ActivityService {
     private  final UserProgressService userProgressService;
     private final ActivityRepository activityRepository;
     private final ActivityTypeRepository activityTypeRepository;
-    private final ActivityParcipantsRepository activityParticipantsRepository;
+    private final ActivityParticipantsRepository activityParticipantsRepository;
     private final UserRepository userRepository;
     private final S3Client s3Client;
     private final S3Properties s3Properties;

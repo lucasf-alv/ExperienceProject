@@ -18,6 +18,7 @@ public class Preferences {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     @ManyToOne
     @JoinColumn(name = "type_id")
