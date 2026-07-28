@@ -3,7 +3,7 @@ docker run -d \
   -p 4566:4566 \
   -e SERVICES=s3 \
   -e DEBUG=1 \
-  localstack/localstack     COMANDO PARA SUBIR O LOCALSTACK
+  localstack/localstack     COMANDO SUBIR O LOCALSTACK
 
   docker exec -it project-experience-db psql -U postgres -d project_experience     COMANDO PARA SUBIR O BANCO (docker run project_experience)
 

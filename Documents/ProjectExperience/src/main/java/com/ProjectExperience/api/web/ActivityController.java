@@ -2,12 +2,15 @@ package com.ProjectExperience.api.web;
 
 import com.ProjectExperience.api.dto.CheckInDto;
 import com.ProjectExperience.api.dto.UpdateActivityDto;
+import com.ProjectExperience.api.exceptions.ApiError;
 import com.ProjectExperience.api.models.Activity;
 import com.ProjectExperience.api.models.ActivityParticipants;
 import com.ProjectExperience.api.models.ActivityType;
 import com.ProjectExperience.api.models.User;
 import com.ProjectExperience.api.security.AuthenticatedUser;
 import com.ProjectExperience.api.service.ActivityService;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,12 +43,33 @@ public class ActivityController {
     @GetMapping("/types")
     @Operation(
             summary = "Listar tipos de atividade",
-            description = "Retorna todos os tipos de atividades disponíveis"
+            description = "Retorna todos os tipos de atividades disponíveis."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Tipos encontrados"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Tipos encontrados"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/types"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<List<ActivityType>> listActivityTypes(){
         return ResponseEntity.ok(activityService.listActivityTypes());
     }
@@ -55,12 +79,33 @@ public class ActivityController {
     @GetMapping
     @Operation(
             summary = "Listar atividades",
-            description = "Retorna atividades paginadas"
+            description = "Retorna uma lista paginada de atividades."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Lista paginada retornada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista paginada retornada"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Page<Activity>> listActivities(Pageable pageable) {
 
         return ResponseEntity.ok(
@@ -72,13 +117,34 @@ public class ActivityController {
     //==========================================================
     @GetMapping("/all")
     @Operation(
-            summary = "Listar todas atividades",
-            description = "Retorna todas as atividades sem paginação"
+            summary = "Listar todas as atividades",
+            description = "Retorna todas as atividades sem paginação."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Atividades retornadas"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividades retornadas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/all"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<List<Activity>> listAllActivities(){
         return ResponseEntity.ok(activityService.listAllActivities());
     }
@@ -88,12 +154,33 @@ public class ActivityController {
     @GetMapping("/user/creator")
     @Operation(
             summary = "Listar atividades criadas pelo usuário",
-            description = "Retorna atividades criadas pelo usuário autenticado com paginação"
+            description = "Retorna as atividades criadas pelo usuário autenticado com paginação."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Atividades encontradas"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividades encontradas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/user/creator"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Page<Activity>> findActivitiesCreatedByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             Pageable pageable
@@ -107,13 +194,34 @@ public class ActivityController {
     //============================================================
     @GetMapping("/user/creator/all")
     @Operation(
-            summary = "Listar todas atividades criadas pelo usuário",
-            description = "Retorna todas as atividades criadas pelo usuário autenticado"
+            summary = "Listar todas as atividades criadas pelo usuário",
+            description = "Retorna todas as atividades criadas pelo usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Atividades encontradas"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividades encontradas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/user/creator/all"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<List<Activity>> findAllActivitiesCreatedByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ){
@@ -124,13 +232,34 @@ public class ActivityController {
     //=============================================================
     @GetMapping("/user/participant")
     @Operation(
-            summary = "Listar atividades participando",
-            description = "Retorna atividades onde o usuário está inscrito"
+            summary = "Listar atividades em que o usuário participa",
+            description = "Retorna as atividades em que o usuário autenticado está inscrito."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Participações encontradas"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Participações encontradas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/user/participant"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Page<ActivityParticipants>> findActivityParticipantsByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             Pageable pageable
@@ -144,17 +273,34 @@ public class ActivityController {
     //=================================================================
     @GetMapping("/user/participant/all")
     @Operation(
-            summary = "Listar todas atividades que o usuário participa",
-            description = "Retorna todas as participações do usuário autenticado sem paginação"
+            summary = "Listar todas as atividades em que o usuário participa",
+            description = "Retorna todas as atividades em que o usuário autenticado está inscrito."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Participações encontradas"
-    )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Usuário não autenticado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividades encontradas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/user/participant/all"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
 
     public ResponseEntity<List<ActivityParticipants>> findAllActitivityPartipantsByUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
@@ -170,20 +316,52 @@ public class ActivityController {
     @GetMapping("/{id}/participants")
     @Operation(
             summary = "Listar participantes da atividade",
-            description = "Retorna todos os usuários inscritos em uma atividade específica"
+            description = "Retorna todos os usuários inscritos em uma atividade específica."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Participantes encontrados"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Usuário não autenticado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Participantes encontrados"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/participants"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/participants"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<List<User>> findAllUsersByActivityId(
             @PathVariable Long id
     ){
@@ -198,20 +376,71 @@ public class ActivityController {
     )
     @Operation(
             summary = "Criar atividade",
-            description = "Cria uma nova atividade com imagem"
+            description = "Cria uma nova atividade com imagem."
     )
-    @ApiResponse(
-            responseCode = "201",
-            description = "Atividade criada"
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Imagem inválida ou dados incorretos"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Tipo de atividade não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Atividade criada com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Imagem inválida ou dados incorretos",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"A imagem deve ser um arquivo PNG ou JPG.",
+                                  "path":"/activities/new"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/new"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Tipo de atividade não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Tipo de atividade não encontrado.",
+                                  "path":"/activities/new"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> createActivity(
             @ModelAttribute UpdateActivityDto dto,
             @RequestPart("image") MultipartFile file,
@@ -232,20 +461,71 @@ public class ActivityController {
     @PostMapping("/{id}/subscribe")
     @Operation(
             summary = "Inscrever usuário na atividade",
-            description = "Realiza a inscrição do usuário autenticado"
+            description = "Realiza a inscrição do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Usuário inscrito"
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Usuário já inscrito ou criador da atividade"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuário inscrito com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Usuário já inscrito ou criador da atividade",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"Você já está inscrito nesta atividade.",
+                                  "path":"/activities/1/subscribe"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/subscribe"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/subscribe"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<ActivityParticipants> subscribeActivity(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @PathVariable Long id
@@ -261,20 +541,90 @@ public class ActivityController {
     )
     @Operation(
             summary = "Atualizar atividade",
-            description = "Atualiza dados e imagem de uma atividade"
+            description = "Atualiza os dados e a imagem de uma atividade."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Atividade atualizada"
-    )
-    @ApiResponse(
-            responseCode = "403",
-            description = "Somente o criador pode editar"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividade atualizada com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados ou imagem inválidos",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"A imagem deve ser um arquivo PNG ou JPG.",
+                                  "path":"/activities/1/update"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/update"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Somente o criador pode editar",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":403,
+                                  "error":"Forbidden",
+                                  "message":"Apenas o criador da atividade pode editá-la.",
+                                  "path":"/activities/1/update"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/update"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Activity> updateActivity(
             @PathVariable Long activityId,
             @ModelAttribute UpdateActivityDto dto,
@@ -297,20 +647,71 @@ public class ActivityController {
     @PutMapping("/{id}/conclude")
     @Operation(
             summary = "Concluir atividade",
-            description = "Marca uma atividade como concluída"
+            description = "Marca uma atividade como concluída."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Atividade concluída"
-    )
-    @ApiResponse(
-            responseCode = "403",
-            description = "Somente o criador pode concluir"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Atividade concluída com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/conclude"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Somente o criador pode concluir",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":403,
+                                  "error":"Forbidden",
+                                  "message":"Apenas o criador da atividade pode concluí-la.",
+                                  "path":"/activities/1/conclude"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/conclude"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Activity>  concludeActivity(
             @PathVariable Long id,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
@@ -323,20 +724,71 @@ public class ActivityController {
     @PutMapping("/{participantId}/approve")
     @Operation(
             summary = "Aprovar participante",
-            description = "Aprova um usuário para participar da atividade"
+            description = "Aprova a participação de um usuário em uma atividade. Apenas o criador da atividade pode realizar esta ação."
     )
-    @ApiResponse(
-            responseCode = "204",
-            description = "Participante aprovado"
-    )
-    @ApiResponse(
-            responseCode = "403",
-            description = "Somente o criador pode aprovar"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Participante não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Participante aprovado com sucesso."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/approve"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Apenas o criador pode aprovar participantes",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":403,
+                                  "error":"Forbidden",
+                                  "message":"Apenas o criador da atividade pode aprovar participantes.",
+                                  "path":"/activities/1/approve"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Participante não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Participante não encontrado.",
+                                  "path":"/activities/1/approve"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> approveParticipant(
             @PathVariable Long participantId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
@@ -355,20 +807,71 @@ public class ActivityController {
     @PutMapping("/{id}/check-in")
     @Operation(
             summary = "Confirmar presença",
-            description = "Realiza check-in usando código de confirmação"
+            description = "Realiza o check-in utilizando o código de confirmação da atividade."
     )
-    @ApiResponse(
-            responseCode = "204",
-            description = "Check-in realizado"
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Código inválido, participante não aprovado ou presença já confirmada"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Check-in realizado com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Código inválido, participante não aprovado ou presença já confirmada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"Código de confirmação incorreto.",
+                                  "path":"/activities/1/check-in"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/check-in"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/check-in"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> checkInActivity(
             @PathVariable Long id,
             @RequestBody CheckInDto dto,
@@ -384,20 +887,71 @@ public class ActivityController {
     @DeleteMapping("{id}/unsubscribe")
     @Operation(
             summary = "Cancelar inscrição",
-            description = "Remove o usuário da atividade"
+            description = "Remove a inscrição do usuário autenticado em uma atividade."
     )
-    @ApiResponse(
-            responseCode = "204",
-            description = "Inscrição removida"
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Presença já confirmada"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade ou inscrição não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Inscrição cancelada com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Não é possível cancelar após confirmação de presença",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"Não é possível cancelar sua inscrição pois sua presença já foi confirmada.",
+                                  "path":"/activities/1/unsubscribe"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/unsubscribe"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade ou inscrição não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade ou inscrição não encontrada.",
+                                  "path":"/activities/1/unsubscribe"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> unsubscribeActivity(
             @PathVariable Long id,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
@@ -411,20 +965,71 @@ public class ActivityController {
     @DeleteMapping("{id}/delete")
     @Operation(
             summary = "Remover atividade",
-            description = "Desativa uma atividade criada pelo usuário"
+            description = "Remove uma atividade criada pelo usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "204",
-            description = "Atividade removida"
-    )
-    @ApiResponse(
-            responseCode = "403",
-            description = "Somente o criador pode remover"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Atividade não encontrada"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Atividade removida com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/activities/1/delete"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Somente o criador pode remover a atividade",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":403,
+                                  "error":"Forbidden",
+                                  "message":"Apenas o criador da atividade pode excluí-la.",
+                                  "path":"/activities/1/delete"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Atividade não encontrada",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Atividade não encontrada.",
+                                  "path":"/activities/1/delete"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> removeActivity(
             @PathVariable Long id,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser

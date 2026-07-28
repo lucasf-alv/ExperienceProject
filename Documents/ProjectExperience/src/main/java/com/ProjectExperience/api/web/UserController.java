@@ -1,10 +1,13 @@
 package com.ProjectExperience.api.web;
 
 import com.ProjectExperience.api.dto.UpdateUserDto;
+import com.ProjectExperience.api.exceptions.ApiError;
 import com.ProjectExperience.api.models.Preferences;
 import com.ProjectExperience.api.models.User;
 import com.ProjectExperience.api.security.AuthenticatedUser;
 import com.ProjectExperience.api.service.UserService;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -39,16 +42,55 @@ public class UserController {
     @GetMapping
     @Operation(
             summary = "Buscar dados do usuário autenticado",
-            description = "Retorna os dados do usuário logado através do token JWT"
+            description = "Retorna os dados do usuário autenticado através do token JWT."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Usuário encontrado"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Usuário não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuário encontrado"
+            ),
+
+            // COLOCA AQUI
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/user"
+                                }
+                                """
+                            )
+                    )
+            ),
+
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Usuário não encontrado.",
+                                  "path":"/user"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<User> findDataUser(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
 
@@ -63,12 +105,52 @@ public class UserController {
     @GetMapping("/preferences")
     @Operation(
             summary = "Listar preferências",
-            description = "Retorna as preferências associadas ao usuário autenticado"
+            description = "Retorna as preferências do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Preferências encontradas"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Preferências encontradas"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/user/preferences"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Usuário não encontrado.",
+                                  "path":"/user/preferences"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<List<Preferences>> listPreferences(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         return ResponseEntity.ok(
@@ -81,16 +163,71 @@ public class UserController {
     @PostMapping("/preferences/define")
     @Operation(
             summary = "Atualizar preferências",
-            description = "Define as preferências selecionadas pelo usuário"
+            description = "Atualiza as preferências do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Preferências atualizadas"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Usuário não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Preferências atualizadas"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Lista de preferências inválida",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"Lista de preferências inválida.",
+                                  "path":"/user/preferences/define"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/user/preferences/define"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Usuário não encontrado.",
+                                  "path":"/user/preferences/define"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<User> updatePreferences(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestBody List<Long> preferencesIds) {
@@ -107,24 +244,71 @@ public class UserController {
     //=================================================================================
     @PutMapping(
             value = "/avatar",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Atualizar avatar",
-            description = "Envia uma imagem PNG ou JPG para o perfil do usuário"
+            description = "Envia uma imagem PNG ou JPG para atualizar a foto de perfil do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Foto atualizada"
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Arquivo inválido"
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Usuário não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuário atualizado com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                            {
+                              "timestamp": "2026-07-28T01:29:16.089",
+                              "status": 400,
+                              "error": "Bad Request",
+                              "message": "O email informado já está em uso.",
+                              "path": "/user/update"
+                            }
+                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                            {
+                              "timestamp": "2026-07-28T01:29:16.089",
+                              "status": 401,
+                              "error": "Unauthorized",
+                              "message": "Autenticação necessária.",
+                              "path": "/user/update"
+                            }
+                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                            {
+                              "timestamp": "2026-07-28T01:29:16.089",
+                              "status": 404,
+                              "error": "Not Found",
+                              "message": "Usuário não encontrado.",
+                              "path": "/user/update"
+                            }
+                            """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<User> updateAvatar(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestParam("file") MultipartFile file) {
@@ -140,14 +324,73 @@ public class UserController {
     //                              ATUALIZAR DADOS
     //===============================================================================
     @PutMapping("/update")
-    @ApiResponse(
-            responseCode = "200",
-            description = "Dados atualizados"
+    @Operation(
+            summary = "Atualizar dados",
+            description = "Atualiza os dados do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Usuário não encontrado"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Dados atualizados com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":400,
+                                  "error":"Bad Request",
+                                  "message":"Os dados informados são inválidos.",
+                                  "path":"/user/update"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/user/update"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Usuário não encontrado.",
+                                  "path":"/user/update"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<User> updateData(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestBody UpdateUserDto dto
@@ -162,12 +405,52 @@ public class UserController {
     @DeleteMapping("/desactivate")
     @Operation(
             summary = "Desativar conta",
-            description = "Marca a conta do usuário como desativada"
+            description = "Desativa a conta do usuário autenticado."
     )
-    @ApiResponse(
-            responseCode = "204",
-            description = "Conta desativada com sucesso"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Conta desativada com sucesso"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Autenticação necessária",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":401,
+                                  "error":"Unauthorized",
+                                  "message":"Autenticação necessária.",
+                                  "path":"/user/desactivate"
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "timestamp":"2026-07-28T01:29:16.089",
+                                  "status":404,
+                                  "error":"Not Found",
+                                  "message":"Usuário não encontrado.",
+                                  "path":"/user/desactivate"
+                                }
+                                """
+                            )
+                    )
+            )
+    })
     public ResponseEntity<Void> desactivateAccount(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ){
