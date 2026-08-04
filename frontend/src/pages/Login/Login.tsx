@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 export function Login() {
   const navigate = useNavigate();
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -116,9 +117,12 @@ export function Login() {
 
           <p className="text-center text-base text-black">
             Ainda não tem uma conta?{" "}
-            <a href="#" className="font-bold text-green-600 hover:underline">
+            <Link
+              to="/register"
+              className="font-bold text-green-600 hover:underline"
+            >
               Cadastre-se
-            </a>
+            </Link>
           </p>
         </form>
       </div>
