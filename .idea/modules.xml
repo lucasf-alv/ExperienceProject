@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ExperienceProject.iml" filepath="$PROJECT_DIR$/.idea/ExperienceProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProjectExperience.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ProjectExperience.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProjectExperience.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProjectExperience.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.ProjectExperience.ProjectExperience.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.ProjectExperience.ProjectExperience.main.iml" />
     </modules>
   </component>
 </project>
