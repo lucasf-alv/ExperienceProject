@@ -1,9 +1,9 @@
 import { useState } from "react";
-import api from "../../services/api";
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import loginBg from "../../assets/images/login.png";
-import logo from "../../assets/icons/Logo.png";
+import loginBg from "../assets/images/login.png";
+import logo from "../assets/icons/Logo.png";
 import { Eye, EyeOff } from "lucide-react";
 
 export function Register() {
