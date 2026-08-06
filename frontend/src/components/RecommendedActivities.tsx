@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { ActivityCard } from "../components/ActivityCard";
+import { ActivityDetailsModal } from "../components/ActivityDetailsModal";
+import type { Activity } from "../types/activity";
 
 interface Props {
   type?: string;
 }
 
 export function RecommendedActivities({ type }: Props) {
-  const [activities, setActivities] = useState<any[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    null,
+  );
 
   useEffect(() => {
     async function loadRecommended() {
@@ -18,17 +23,16 @@ export function RecommendedActivities({ type }: Props) {
         const preferences = preferencesResponse.data;
         const allActivities = activitiesResponse.data.content;
 
-        let recommended = allActivities.filter((activity: any) =>
+        let recommended = allActivities.filter((activity: Activity) =>
           preferences.some(
             (preference: any) =>
               preference.activityType.id === activity.activityType.id,
           ),
         );
 
-        // Se recebeu um tipo, filtra somente aquele tipo
         if (type) {
           recommended = recommended.filter(
-            (activity: any) =>
+            (activity: Activity) =>
               activity.activityType.name.toLowerCase() === type.toLowerCase(),
           );
         }
@@ -52,13 +56,20 @@ export function RecommendedActivities({ type }: Props) {
         {activities.map((activity) => (
           <ActivityCard
             key={activity.id}
-            title={activity.title}
-            image={activity.image}
-            date={activity.scheduled_Date}
-            participants={0}
+            activity={activity}
+            onClick={(activity) => {
+              setSelectedActivity(activity);
+            }}
           />
         ))}
       </div>
+
+      {selectedActivity && (
+        <ActivityDetailsModal
+          activity={selectedActivity}
+          onClose={() => setSelectedActivity(null)}
+        />
+      )}
     </>
   );
 }
