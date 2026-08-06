@@ -3,6 +3,7 @@ import { ActivityListItem } from "../components/ActivityListItem";
 import { ActivityDetailsModal } from "../components/ActivityDetailsModal";
 import { findAllActivities } from "../services/activityService";
 import type { Activity } from "../types/activity";
+import api from "../services/api";
 
 interface ActivitiesProps {
   type: string;
@@ -11,21 +12,33 @@ interface ActivitiesProps {
 export function Activities({ type }: ActivitiesProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
 
-  // NOVO
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null,
   );
 
-  useEffect(() => {
-    findAllActivities().then((response) => {
-      const filtered = response.content.filter(
+  findAllActivities().then(async (response) => {
+    const filtered = response.content
+      .filter(
         (activity) =>
           activity.activityType.name.toLowerCase() === type.toLowerCase(),
-      );
+      )
+      .slice(0, 4);
 
-      setActivities(filtered);
-    });
-  }, [type]);
+    const activitiesWithParticipants = await Promise.all(
+      filtered.map(async (activity) => {
+        const participantsResponse = await api.get(
+          `/activities/${activity.id}/participants`,
+        );
+
+        return {
+          ...activity,
+          participants: participantsResponse.data.length,
+        };
+      }),
+    );
+
+    setActivities(activitiesWithParticipants);
+  });
 
   return (
     <>
@@ -42,9 +55,9 @@ export function Activities({ type }: ActivitiesProps) {
         ))}
       </div>
 
-      {false && (
+      {selectedActivity && (
         <ActivityDetailsModal
-          activity={selectedActivity!}
+          activity={selectedActivity}
           onClose={() => setSelectedActivity(null)}
         />
       )}

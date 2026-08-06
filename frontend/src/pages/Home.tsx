@@ -75,7 +75,7 @@ export function Home() {
           ))}
         </div>
         <div className="grid grid-cols-2 gap-8">
-          {preferences.map((pref) => (
+          {preferences.slice(0, 4).map((pref) => (
             <div key={pref.id}>
               <h2 className="mb-6 text-3xl font-bold">
                 {pref.activityType.name}

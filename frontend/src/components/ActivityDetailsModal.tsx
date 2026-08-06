@@ -22,22 +22,16 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
     try {
       await subscribeActivity(activity.id);
 
+      const response = await api.get(`/activities/${activity.id}/participants`);
+
+      setParticipants(response.data);
+
       alert("Inscrição realizada com sucesso!");
     } catch (error) {
       console.log("Erro ao participar:", error);
       alert("Não foi possível participar da atividade.");
     }
   }
-
-  useEffect(() => {
-    if (!activity) return;
-
-    api
-      .get(`/activities/${activity.id}/participants`)
-      .then((res) => setParticipants(res.data));
-
-    api.get("/user").then((res) => setLoggedUser(res.data));
-  }, [activity]);
 
   return (
     <>
@@ -73,7 +67,7 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
 
                 <div className="flex items-center gap-2">
                   <Users className="text-green-500" size={20} />
-                  {activity.participants} participantes
+                  {participants.length} participantes
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -114,10 +108,15 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
             <div>
               <h3 className="mb-4 text-2xl font-bold">Ponto de encontro</h3>
 
-              <MapViewer
-                latitude={activity.activityAddress.latitude}
-                longitude={activity.activityAddress.longitude}
-              />
+              {activity.activityAddress?.latitude &&
+              activity.activityAddress?.longitude ? (
+                <MapViewer
+                  latitude={activity.activityAddress.latitude}
+                  longitude={activity.activityAddress.longitude}
+                />
+              ) : (
+                <p className="text-gray-500">Localização não informada</p>
+              )}
 
               <h3 className="mb-4 mt-6 text-2xl font-bold">Participantes</h3>
 
