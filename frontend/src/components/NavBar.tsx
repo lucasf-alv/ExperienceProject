@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { CirclePlus, LogOut } from "lucide-react";
 import logo from "../assets/icons/Logo.png";
-
+import { useEffect, useState } from "react";
+import { CreateActivityModal } from "./CreateActivityModal";
 export function Navbar() {
   const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -19,13 +21,13 @@ export function Navbar() {
 
       {/* Ações */}
       <div className="flex items-center gap-6">
-        <Link
-          to="/activities/create"
+        <button
+          onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 rounded-lg bg-green-500 px-5 py-3 font-semibold text-white transition hover:bg-green-600"
         >
           <CirclePlus size={20} />
           Criar atividade
-        </Link>
+        </button>
 
         <img
           src="https://i.pravatar.cc/150"
@@ -39,6 +41,10 @@ export function Navbar() {
         >
           <LogOut size={22} />
         </button>
+        <CreateActivityModal
+          open={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+        />
       </div>
     </header>
   );

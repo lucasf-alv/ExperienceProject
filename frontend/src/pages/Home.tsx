@@ -7,6 +7,9 @@ import ciclismoImg from "../assets/images/ciclismo.jpeg";
 import futebolImg from "../assets/images/futebol.jpeg";
 import yogaImg from "../assets/images/yoga.jpeg";
 import CrossfitImg from "../assets/images/crossfit.jpeg";
+import basqueteImg from "../assets/images/basquete.jpg";
+import xadrezImg from "../assets/images/xadrez.jpeg";
+
 import { PreferencesModal } from "../components/PreferencesModal";
 import { useEffect, useState } from "react";
 import api from "../services/api";
@@ -69,21 +72,17 @@ export function Home() {
             />
           ))}
         </div>
-        <h2 className="mb-6 text-3xl font-bold">Futebol</h2>
+        <div className="grid grid-cols-2 gap-8">
+          {preferences.map((pref) => (
+            <div key={pref.id}>
+              <h2 className="mb-6 text-3xl font-bold">
+                {pref.activityType.name}
+              </h2>
 
-        <Activities type="Futebol" />
-
-        <h2 className="mb-6 mt-10 text-3xl font-bold">Corrida</h2>
-
-        <Activities type="Corrida" />
-
-        <h2 className="mb-6 mt-10 text-3xl font-bold">Crossfit</h2>
-
-        <Activities type="Crossfit" />
-
-        <h2 className="mb-6 mt-10 text-3xl font-bold">Vôlei</h2>
-
-        <Activities type="Vôlei" />
+              <Activities type={pref.activityType.name} />
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );

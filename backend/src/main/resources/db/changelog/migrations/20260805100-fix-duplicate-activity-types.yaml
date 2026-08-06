@@ -1,0 +1,36 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: update-duplicate-activity-types
+      author: lucas
+
+      changes:
+
+        - update:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Basquete
+              - column:
+                  name: description
+                  value: Partidas de basquete
+              - column:
+                  name: image
+                  value: basquete.png
+            where: id = 5
+
+
+        - update:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Xadrez
+              - column:
+                  name: description
+                  value: Partidas de xadrez
+              - column:
+                  name: image
+                  value: xadrez.png
+            where: id = 7

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityCard } from "../components/ActivityCard";
+import { ActivityListItem } from "../components/ActivityListItem";
 import { findAllActivities } from "../services/activityService";
 import type { Activity } from "../types/activity";
 
@@ -22,9 +22,9 @@ export function Activities({ type }: ActivitiesProps) {
   }, [type]);
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="flex flex-col gap-4">
       {activities.map((activity) => (
-        <ActivityCard
+        <ActivityListItem
           key={activity.id}
           title={activity.title}
           image={activity.image}
