@@ -16,29 +16,39 @@ export function Activities({ type }: ActivitiesProps) {
     null,
   );
 
-  findAllActivities().then(async (response) => {
-    const filtered = response.content
-      .filter(
-        (activity) =>
-          activity.activityType.name.toLowerCase() === type.toLowerCase(),
-      )
-      .slice(0, 4);
+  useEffect(() => {
+    async function loadActivities() {
+      try {
+        const response = await findAllActivities();
 
-    const activitiesWithParticipants = await Promise.all(
-      filtered.map(async (activity) => {
-        const participantsResponse = await api.get(
-          `/activities/${activity.id}/participants`,
+        const filtered = response.content
+          .filter(
+            (activity) =>
+              activity.activityType.name.toLowerCase() === type.toLowerCase(),
+          )
+          .slice(0, 4);
+
+        const activitiesWithParticipants = await Promise.all(
+          filtered.map(async (activity) => {
+            const countResponse = await api.get(
+              `/activities/${activity.id}/participants/count`,
+            );
+
+            return {
+              ...activity,
+              participants: countResponse.data,
+            };
+          }),
         );
 
-        return {
-          ...activity,
-          participants: participantsResponse.data.length,
-        };
-      }),
-    );
+        setActivities(activitiesWithParticipants);
+      } catch (error) {
+        console.log("Erro ao carregar atividades", error);
+      }
+    }
 
-    setActivities(activitiesWithParticipants);
-  });
+    loadActivities();
+  }, [type]);
 
   return (
     <>

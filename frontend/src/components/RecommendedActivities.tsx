@@ -37,7 +37,20 @@ export function RecommendedActivities({ type }: Props) {
           );
         }
 
-        setActivities(recommended.slice(0, 8));
+        const activitiesWithParticipants = await Promise.all(
+          recommended.slice(0, 8).map(async (activity: Activity) => {
+            const response = await api.get(
+              `/activities/${activity.id}/participants/count`,
+            );
+
+            return {
+              ...activity,
+              participants: response.data,
+            };
+          }),
+        );
+
+        setActivities(activitiesWithParticipants);
       } catch (error) {
         console.log("Erro ao carregar recomendados", error);
       }

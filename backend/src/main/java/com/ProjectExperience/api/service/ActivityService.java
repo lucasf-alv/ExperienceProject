@@ -465,5 +465,11 @@ public class ActivityService {
             throw new PhotoError("Falha ao enviar imagem.");
         }
     }
+    public Long countParticipants(Long activityId){
+
+        return activityParticipantsRepository
+                .countParticipantsByActivityId(activityId);
+
+    }
 
 }

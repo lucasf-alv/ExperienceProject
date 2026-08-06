@@ -4,6 +4,7 @@ import com.ProjectExperience.api.models.ActivityParticipants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +23,10 @@ public interface ActivityParticipantsRepository extends JpaRepository<ActivityPa
     boolean existsByUserId(Long userId);
 
     boolean existsByActivityIdAndUserId(Long activityId, Long id);
+    @Query("""
+    SELECT COUNT(ap)
+    FROM ActivityParticipants ap
+    WHERE ap.activity.id = :activityId
+""")
+    Long countParticipantsByActivityId(Long activityId);
 }

@@ -15,8 +15,31 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
   const [participants, setParticipants] = useState<any[]>([]);
   const [loggedUser, setLoggedUser] = useState<any>(null);
   const [editMode, setEditMode] = useState(false);
+  const [participantCount, setParticipantCount] = useState(0);
 
   const isCreator = loggedUser?.id === activity?.creator?.id;
+  useEffect(() => {
+    if (!activity) return;
+
+    async function loadData() {
+      try {
+        const participantsResponse = await api.get(
+          `/activities/${activity.id}/participants`,
+        );
+
+        setParticipants(participantsResponse.data);
+        setParticipantCount(participantsResponse.data.length);
+
+        const userResponse = await api.get("/user");
+
+        setLoggedUser(userResponse.data);
+      } catch (error) {
+        console.log("Erro ao carregar dados da atividade", error);
+      }
+    }
+
+    loadData();
+  }, [activity]);
 
   async function handleSubscribe() {
     try {
@@ -67,7 +90,7 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
 
                 <div className="flex items-center gap-2">
                   <Users className="text-green-500" size={20} />
-                  {participants.length} participantes
+                  {participantCount} participantes
                 </div>
 
                 <div className="flex items-center gap-2">

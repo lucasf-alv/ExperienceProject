@@ -1037,6 +1037,19 @@ public class ActivityController {
         activityService.removeActivity(id,authenticatedUser.getUser());
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/{id}/participants/count")
+    @Operation(
+            summary = "Contar participantes da atividade",
+            description = "Retorna a quantidade de usuários inscritos em uma atividade."
+    )
+    public ResponseEntity<Long> countParticipants(
+            @PathVariable Long id
+    ){
+
+        return ResponseEntity.ok(
+                activityService.countParticipants(id)
+        );
+    }
 
 
 
