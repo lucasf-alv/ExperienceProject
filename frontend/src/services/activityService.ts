@@ -8,3 +8,18 @@ export async function findAllActivities(): Promise<PageResponse<Activity>> {
 
   return response.data;
 }
+export async function subscribeActivity(activityId: number) {
+  const response = await api.post(`/activities/${activityId}/subscribe`);
+
+  return response.data;
+}
+
+export async function updateActivity(activityId: number, formData: FormData) {
+  const response = await api.put(`/activities/${activityId}/update`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+}

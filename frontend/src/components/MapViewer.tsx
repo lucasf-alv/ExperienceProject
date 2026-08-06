@@ -1,26 +1,60 @@
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import L from "leaflet";
-
-const icon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { useState } from "react";
 
 interface Props {
   latitude: number;
   longitude: number;
+  editable?: boolean;
+  onLocationChange?: (lat: number, lng: number) => void;
 }
 
-export function MapViewer({ latitude, longitude }: Props) {
+function LocationSelector({
+  onLocationChange,
+}: {
+  onLocationChange: (lat: number, lng: number) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      onLocationChange(e.latlng.lat, e.latlng.lng);
+    },
+  });
+
+  return null;
+}
+
+export function MapViewer({
+  latitude,
+  longitude,
+  editable = false,
+  onLocationChange,
+}: Props) {
+  const [position, setPosition] = useState({
+    lat: latitude,
+    lng: longitude,
+  });
+
+  function handleChange(lat: number, lng: number) {
+    setPosition({
+      lat,
+      lng,
+    });
+
+    onLocationChange?.(lat, lng);
+  }
+
   return (
     <MapContainer
-      center={[latitude, longitude]}
+      center={[position.lat, position.lng]}
       zoom={15}
-      className="h-72 w-full rounded-xl"
+      className="h-80 w-full rounded-xl"
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      <Marker position={[latitude, longitude]} icon={icon} />
+      <Marker position={[position.lat, position.lng]} />
+
+      {editable && onLocationChange && (
+        <LocationSelector onLocationChange={handleChange} />
+      )}
     </MapContainer>
   );
 }
