@@ -1,10 +1,12 @@
-import { X, CalendarDays, Users, Lock, Unlock } from "lucide-react";
+import { X, CalendarDays, Users, Lock, Unlock, Check } from "lucide-react";
+
 import type { Activity } from "../types/activity";
 import { MapViewer } from "./MapViewer";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { subscribeActivity } from "../services/activityService";
 import { EditActivityModal } from "../components/EditActivityModal";
+import defaultAvatar from "../assets/images/avatar.png";
 
 interface Props {
   activity: Activity;
@@ -15,28 +17,40 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
   const [participants, setParticipants] = useState<any[]>([]);
   const [loggedUser, setLoggedUser] = useState<any>(null);
   const [editMode, setEditMode] = useState(false);
-  const [participantCount, setParticipantCount] = useState(0);
+
+  // participação do usuário logado nessa atividade
+  const [myParticipation, setMyParticipation] = useState<any>(null);
 
   const isCreator = loggedUser?.id === activity?.creator?.id;
+
+  async function loadData() {
+    try {
+      const participantsResponse = await api.get(
+        `/activities/${activity.id}/participants`,
+      );
+
+      const participantsData = participantsResponse.data;
+
+      setParticipants(participantsData);
+
+      const userResponse = await api.get("/user");
+
+      const currentUser = userResponse.data;
+
+      setLoggedUser(currentUser);
+
+      const myPart = participantsData.find(
+        (participant: any) => participant.user?.id === currentUser.id,
+      );
+
+      setMyParticipation(myPart ?? null);
+    } catch (error) {
+      console.log("Erro ao carregar dados:", error);
+    }
+  }
+
   useEffect(() => {
     if (!activity) return;
-
-    async function loadData() {
-      try {
-        const participantsResponse = await api.get(
-          `/activities/${activity.id}/participants`,
-        );
-
-        setParticipants(participantsResponse.data);
-        setParticipantCount(participantsResponse.data.length);
-
-        const userResponse = await api.get("/user");
-
-        setLoggedUser(userResponse.data);
-      } catch (error) {
-        console.log("Erro ao carregar dados da atividade", error);
-      }
-    }
 
     loadData();
   }, [activity]);
@@ -45,31 +59,59 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
     try {
       await subscribeActivity(activity.id);
 
-      const response = await api.get(`/activities/${activity.id}/participants`);
-
-      setParticipants(response.data);
+      await loadData();
 
       alert("Inscrição realizada com sucesso!");
     } catch (error) {
       console.log("Erro ao participar:", error);
+
       alert("Não foi possível participar da atividade.");
+    }
+  }
+
+  async function handleUnsubscribe() {
+    try {
+      await api.delete(`/activities/${activity.id}/unsubscribe`);
+
+      // remove visualmente imediatamente
+      setParticipants((prev) =>
+        prev.filter((participant) => participant.user?.id !== loggedUser.id),
+      );
+
+      // tira a participação do usuário
+      setMyParticipation(null);
+
+      alert("Inscrição cancelada!");
+    } catch (error) {
+      console.log("Erro ao cancelar inscrição:", error);
+      alert("Não foi possível cancelar a inscrição.");
+    }
+  }
+
+  async function approveParticipant(participantId: number) {
+    try {
+      await api.put(`/activities/${participantId}/approve`);
+
+      await loadData();
+    } catch (error) {
+      console.log("Erro ao aprovar participante", error);
     }
   }
 
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div className="relative w-400px rounded-2xl bg-white shadow-xl">
-          {/* Botão fechar */}
+        <div className="relative w-[1100px] rounded-2xl bg-white shadow-xl">
           <button
             onClick={onClose}
-            className="absolute right-5 top-5 z-10 rounded-full p-2 transition hover:bg-gray-100"
+            className="absolute right-5 top-5 z-10 rounded-full p-2 hover:bg-gray-100"
           >
             <X size={22} />
           </button>
 
           <div className="grid grid-cols-2 gap-10 p-8">
-            {/* Coluna esquerda */}
+            {/* ESQUERDA */}
+
             <div>
               <img
                 src={activity.image}
@@ -90,7 +132,7 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
 
                 <div className="flex items-center gap-2">
                   <Users className="text-green-500" size={20} />
-                  {participantCount} participantes
+                  {participants.length} participantes
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -116,18 +158,33 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
                   >
                     Editar atividade
                   </button>
-                ) : (
+                ) : !myParticipation ? (
                   <button
                     onClick={handleSubscribe}
                     className="rounded-lg bg-green-500 px-6 py-3 text-white"
                   >
                     Participar
                   </button>
+                ) : activity.Private && !myParticipation.approved ? (
+                  <button
+                    disabled
+                    className="rounded-lg bg-gray-400 px-6 py-3 text-white"
+                  >
+                    Aguardando aprovação
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleUnsubscribe}
+                    className="rounded-lg bg-red-500 px-6 py-3 text-white"
+                  >
+                    Desinscrever
+                  </button>
                 )}
               </div>
             </div>
 
-            {/* Coluna direita */}
+            {/* DIREITA */}
+
             <div>
               <h3 className="mb-4 text-2xl font-bold">Ponto de encontro</h3>
 
@@ -144,20 +201,47 @@ export function ActivityDetailsModal({ activity, onClose }: Props) {
               <h3 className="mb-4 mt-6 text-2xl font-bold">Participantes</h3>
 
               <div className="space-y-3">
-                {participants.map((user: any) => (
-                  <div key={user.id} className="flex items-center gap-3">
-                    <img src={user.avatar} className="h-10 w-10 rounded-full" />
+                {participants.map((participant) => {
+                  const user = participant.user ?? participant;
 
-                    <span>{user.name}</span>
-                  </div>
-                ))}
+                  return (
+                    <div
+                      key={participant.id}
+                      className="flex items-center justify-between rounded-lg border p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={user.avatar || defaultAvatar}
+                          onError={(e) => {
+                            e.currentTarget.src = defaultAvatar;
+                          }}
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+
+                        <span className="font-medium">{user.name}</span>
+                      </div>
+
+                      {isCreator && participant.approved === false && (
+                        <button
+                          onClick={() => approveParticipant(participant.id)}
+                          className="rounded-lg bg-green-500 px-3 py-2 text-white"
+                        >
+                          Aprovar
+                        </button>
+                      )}
+
+                      {participant.approved && (
+                        <span className="text-green-600">Aprovado</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal de edição */}
       {editMode && (
         <EditActivityModal
           activity={activity}

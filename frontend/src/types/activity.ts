@@ -15,12 +15,10 @@ export interface Activity {
   creator: {
     id: number;
     name: string;
-    email: string;
     avatar: string;
   };
 
   activityAddress: {
-    id: number;
     latitude: number | null;
     longitude: number | null;
   };

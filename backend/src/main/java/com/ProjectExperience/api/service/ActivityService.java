@@ -6,6 +6,7 @@ import com.ProjectExperience.api.dto.UpdateActivityDto;
 import com.ProjectExperience.api.exceptions.*;
 import com.ProjectExperience.api.models.*;
 import com.ProjectExperience.api.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,17 +82,14 @@ public class ActivityService {
         );
     }
 
-    public List<User> findAllUsersByActivityId(Long activityId) {
+    public List<ActivityParticipants> findAllUsersByActivityId(Long id){
 
-        Activity activity = activityRepository.findById(activityId)
+        Activity activity = activityRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Atividade não encontrada"));
+                        new RuntimeException("Atividade não encontrada")
+                );
 
-        return activityParticipantsRepository
-                .findByActivityId(activity.getId())
-                .stream()
-                .map(ActivityParticipants::getUser)
-                .toList();
+        return activity.getParticipants();
     }
 
     // ==========================
@@ -343,29 +341,32 @@ public class ActivityService {
     //=========================
     // UNSUBSCRIBE
     //====================
+    @Transactional
     public void unsubscribeActivity(Long activityId, User loggedUser) {
 
-        // Verifica se a atividade existe
         activityRepository.findById(activityId)
                 .orElseThrow(() ->
                         new RuntimeException("Atividade não encontrada"));
 
-        // Procura a inscrição do usuário
         ActivityParticipants participant =
                 activityParticipantsRepository
-                        .findByActivityIdAndUserId(activityId, loggedUser.getId())
+                        .findByActivityIdAndUserId(
+                                activityId,
+                                loggedUser.getId()
+                        )
                         .orElseThrow(() ->
-                                new RuntimeException("Usuário não está inscrito nesta atividade"));
+                                new RuntimeException(
+                                        "Usuário não está inscrito nesta atividade"
+                                ));
 
-        // Lança E18: Não é possível confirmar cancelar sua inscrição pois sua presença já foi confirmada
         if (participant.getConfirmed_at() != null) {
             throw new CancelSubscribeError(
                     "Não é possível cancelar sua inscrição, pois sua presença já foi confirmada."
             );
         }
 
-        // Remove a inscrição
-        activityParticipantsRepository.delete(participant);
+        activityParticipantsRepository.deleteById(participant.getId());
+        activityParticipantsRepository.flush();
     }
     //=========================
     // REMOVE UMA ATIVIDADE

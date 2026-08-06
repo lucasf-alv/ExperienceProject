@@ -362,10 +362,12 @@ public class ActivityController {
                     )
             )
     })
-    public ResponseEntity<List<User>> findAllUsersByActivityId(
+    public ResponseEntity<List<ActivityParticipants>> findAllUsersByActivityId(
             @PathVariable Long id
     ){
-        return ResponseEntity.ok(activityService.findAllUsersByActivityId(id));
+        return ResponseEntity.ok(
+                activityService.findAllUsersByActivityId(id)
+        );
     }
     //======================================================================
     //                         CRIA UMA ATIVIDADE

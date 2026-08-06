@@ -43,7 +43,7 @@ public class Activity {
     private User creator;
     @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
     private ActivityAddress activityAddress;
-    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "activity")
     @JsonIgnore
     private List<ActivityParticipants> participants = new ArrayList<>();
     @ManyToOne
