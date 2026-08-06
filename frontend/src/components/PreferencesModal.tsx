@@ -19,6 +19,7 @@ export function PreferencesModal({ types, onClose }: PreferencesModalProps) {
   }
 
   async function savePreferences() {
+    console.log(selected);
     await api.post("user/preferences/define", selected);
 
     onClose();

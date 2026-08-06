@@ -24,6 +24,8 @@ export function Home() {
     Futebol: futebolImg,
     Yoga: yogaImg,
     Crossfit: CrossfitImg,
+    Basquete: basqueteImg,
+    Xadrez: xadrezImg,
   };
 
   useEffect(() => {

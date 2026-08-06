@@ -33,6 +33,7 @@ public class UserService {
     private final S3Properties s3Properties;
     private final UserProgressService userProgressService;
     private final PasswordEncoder passwordEncoder;
+    private final ActivityTypeRepository activityTypeRepository;
 
     // ==========================
     // BUSCAR USUÁRIO
@@ -53,22 +54,27 @@ public class UserService {
         return preferenceRepository.findByUserId(loggedUser.getId());
     }
 
-    public User updatePreferences(User loggedUser,
-                                  List<Long> preferenceIds) {
+    @Transactional
+    public User updatePreferences(User loggedUser, List<Long> activityTypeIds) {
 
-        List<Preferences> preferences =
-                preferenceRepository.findAllById(preferenceIds);
+        preferenceRepository.deleteAllByUser(loggedUser);
 
-        preferences.forEach(preference ->
-                preference.setUser(loggedUser)
-        );
+        List<ActivityType> activityTypes =
+                activityTypeRepository.findAllById(activityTypeIds);
+
+        List<Preferences> preferences = activityTypes.stream()
+                .map(type -> Preferences.builder()
+                        .user(loggedUser)
+                        .activityType(type)
+                        .build())
+                .toList();
 
         preferenceRepository.saveAll(preferences);
 
         return userRepository.findByIdWithAchievements(loggedUser.getId())
-                .orElseThrow(() -> new UserNotFoundError("Usuário não encontrado"));
+                .orElseThrow(() ->
+                        new UserNotFoundError("Usuário não encontrado"));
     }
-
     // ==========================
     // DADOS DO USUÁRIO
     // ==========================
