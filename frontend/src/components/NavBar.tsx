@@ -3,9 +3,18 @@ import { CirclePlus, LogOut } from "lucide-react";
 import logo from "../assets/icons/Logo.png";
 import { useEffect, useState } from "react";
 import { CreateActivityModal } from "./CreateActivityModal";
+import api from "../services/api";
+import defaultAvatar from "../assets/images/avatar.png";
 export function Navbar() {
   const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [user, setUser] = useState<any>();
+
+  useEffect(() => {
+    api.get("/user").then((response) => {
+      setUser(response.data);
+    });
+  }, []);
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -30,9 +39,10 @@ export function Navbar() {
         </button>
 
         <img
-          src="https://i.pravatar.cc/150"
-          alt="Perfil"
-          className="h-12 w-12 cursor-pointer rounded-full border-2 border-green-500 object-cover"
+          src={user?.avatar || defaultAvatar}
+          onError={(e) => (e.currentTarget.src = defaultAvatar)}
+          className="h-12 w-12 rounded-full object-cover cursor-pointer"
+          onClick={() => navigate("/profile")}
         />
 
         <button

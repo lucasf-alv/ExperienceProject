@@ -641,6 +641,7 @@ public class ActivityController {
                 authenticatedUser.getUser()
         );
 
+
         return ResponseEntity.ok(activity);
     }
     //==============================================================

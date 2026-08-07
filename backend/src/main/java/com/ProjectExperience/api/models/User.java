@@ -39,7 +39,7 @@ public class User {
     @JsonIgnore
     private List<Preferences> preferences = new ArrayList<>();
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonIgnore
+
     private List<UserAchievements> userAchiviements = new ArrayList<>();
     @OneToMany(mappedBy = "creator" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
