@@ -9,7 +9,7 @@ import yogaImg from "../assets/images/yoga.jpeg";
 import CrossfitImg from "../assets/images/crossfit.jpeg";
 import basqueteImg from "../assets/images/basquete.jpg";
 import xadrezImg from "../assets/images/xadrez.jpeg";
-
+import { useNavigate } from "react-router-dom";
 import { PreferencesModal } from "../components/PreferencesModal";
 import { useEffect, useState } from "react";
 import api from "../services/api";
@@ -18,6 +18,7 @@ export function Home() {
   const [activityTypes, setActivityTypes] = useState([]);
   const [showPreferences, setShowPreferences] = useState(false);
   const [preferences, setPreferences] = useState([]);
+  const navigate = useNavigate();
   const activityImages: Record<string, string> = {
     Corrida: corridaImg,
     Ciclismo: ciclismoImg,
@@ -77,9 +78,41 @@ export function Home() {
         <div className="grid grid-cols-2 gap-8">
           {preferences.slice(0, 4).map((pref) => (
             <div key={pref.id}>
-              <h2 className="mb-6 text-3xl font-bold">
-                {pref.activityType.name}
-              </h2>
+              <div
+                className="
+          mb-6
+          flex
+          items-center
+          justify-between
+        "
+              >
+                <h2
+                  className="
+            text-3xl
+            font-bold
+          "
+                >
+                  {pref.activityType.name}
+                </h2>
+
+                <button
+                  onClick={() =>
+                    navigate(`/activities/${pref.activityType.name}`)
+                  }
+                  className="
+            rounded-lg
+            px-4
+            py-2
+            text-sm
+            font-semibold
+            text-green-600
+            transition
+            hover:bg-green-50
+          "
+                >
+                  Ver mais →
+                </button>
+              </div>
 
               <Activities type={pref.activityType.name} />
             </div>
