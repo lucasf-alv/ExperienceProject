@@ -385,10 +385,13 @@ text-center
             type="button"
             onClick={() => setShowDeactivateModal(true)}
             className="
-text-red-600
-font-bold
-hover:underline
-"
+    cursor-pointer
+    text-red-600
+    font-bold
+    transition
+    hover:text-red-700
+    hover:underline
+  "
           >
             Desativar minha conta
           </button>
