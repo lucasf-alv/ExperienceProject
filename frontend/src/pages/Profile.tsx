@@ -78,14 +78,19 @@ export function Profile() {
           <button
             onClick={() => navigate("/profile/edit")}
             className="
-              float-right
-              rounded-lg
-              border
-              px-4
-              py-2
-              transition
-              hover:bg-gray-100
-            "
+    float-right
+    cursor-pointer
+    rounded-lg
+    border
+    border-gray-200
+    px-4
+    py-2
+    text-gray-600
+    transition
+    hover:border-green-500
+    hover:bg-green-50
+    hover:text-green-700
+  "
           >
             Editar perfil
           </button>

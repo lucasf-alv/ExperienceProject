@@ -32,7 +32,20 @@ export function Navbar() {
       <div className="flex items-center gap-6">
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-green-500 px-5 py-3 font-semibold text-white transition hover:bg-green-600"
+          className="
+    flex
+    cursor-pointer
+    items-center
+    gap-2
+    rounded-lg
+    bg-green-500
+    px-5
+    py-3
+    font-semibold
+    text-white
+    transition
+    hover:bg-green-600
+  "
         >
           <CirclePlus size={20} />
           Criar atividade
@@ -47,7 +60,12 @@ export function Navbar() {
 
         <button
           onClick={handleLogout}
-          className="text-gray-600 transition hover:text-red-500"
+          className="
+    cursor-pointer
+    text-gray-600
+    transition
+    hover:text-red-500
+  "
         >
           <LogOut size={22} />
         </button>

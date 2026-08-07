@@ -135,24 +135,23 @@ min-h-[1000px]
         <button
           onClick={() => navigate("/profile")}
           className="
-mb-8
-flex
-items-center
-gap-2
-rounded-xl
-border
-border-gray-200
-px-5
-py-3
-text-gray-600
-transition
-hover:border-green-500
-hover:bg-green-50
-hover:text-green-700
-"
+    mb-8
+    flex
+    cursor-pointer
+    items-center
+    gap-2
+    rounded-xl
+    border
+    border-gray-200
+    px-5
+    py-3
+    text-gray-600
+    transition
+    hover:border-green-500
+    hover:bg-green-50
+    hover:text-green-700
+  "
         >
-          <ArrowLeft size={20} />
-
           <span>Voltar para perfil</span>
         </button>
 
@@ -343,13 +342,15 @@ pt-8
               type="submit"
               disabled={loading}
               className="
-rounded-xl
-bg-green-600
-px-8
-py-3
-text-white
-hover:bg-green-700
-"
+    cursor-pointer
+    rounded-xl
+    bg-green-600
+    px-8
+    py-3
+    text-white
+    transition
+    hover:bg-green-700
+  "
             >
               {loading ? "Salvando..." : "Salvar"}
             </button>
@@ -358,12 +359,14 @@ hover:bg-green-700
               type="button"
               onClick={() => navigate("/profile")}
               className="
-rounded-xl
-border
-px-8
-py-3
-hover:bg-gray-100
-"
+    cursor-pointer
+    rounded-xl
+    border
+    px-8
+    py-3
+    transition
+    hover:bg-gray-100
+  "
             >
               Cancelar
             </button>

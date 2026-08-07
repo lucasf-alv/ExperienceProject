@@ -99,16 +99,16 @@ export function Home() {
                   onClick={() =>
                     navigate(`/activities/${pref.activityType.name}`)
                   }
-                  className="
-            rounded-lg
-            px-4
-            py-2
-            text-sm
-            font-semibold
-            text-green-600
-            transition
-            hover:bg-green-50
-          "
+                  className="  cursor-pointer
+    rounded-lg
+    px-4
+    py-2
+    text-sm
+    font-semibold
+    text-green-600
+    transition
+    hover:bg-green-50
+  "
                 >
                   Ver mais →
                 </button>

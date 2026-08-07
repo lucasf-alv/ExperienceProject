@@ -11,7 +11,15 @@ export function ActivityTypeCard({ name, image }: Props) {
   return (
     <button
       onClick={() => navigate(`/activities/${name}`)}
-      className="flex flex-col items-center gap-2 transition hover:scale-105"
+      className="
+        flex
+        cursor-pointer
+        flex-col
+        items-center
+        gap-2
+        transition
+        hover:scale-105
+      "
     >
       <img
         src={image}
