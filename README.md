@@ -1,44 +1,69 @@
-# Project Experience API
+# Project Experience
 
-API REST desenvolvida em Spring Boot para gerenciamento de atividades, usuários, participantes, autenticação JWT, conquistas e progresso de usuários.
+Aplicação web para criação, descoberta e participação em atividades, com autenticação de usuários, preferências, participantes, check-in, conquistas e armazenamento de imagens.
 
----
-
-# Tecnologias utilizadas
-
-- Java 26
-- Spring Boot 4
-- Spring Security + JWT
-- Spring Data JPA
-- PostgreSQL
-- Liquibase
-- Docker
-- LocalStack (Amazon S3)
-- Swagger OpenAPI
-- Gradle
+O projeto é dividido em **backend REST em Spring Boot** e **frontend em React + TypeScript**.
 
 ---
 
-# Pré-requisitos
+## 🚀 Tecnologias utilizadas
 
-Antes de executar o projeto, instale:
+### Backend
 
-- Java 26+
-- Docker
-- Docker Compose
-- Git
+* Java 26
+* Spring Boot 4
+* Spring Security
+* JWT
+* Spring Data JPA
+* Hibernate
+* PostgreSQL
+* Liquibase
+* Gradle
+* Swagger / OpenAPI
+* AWS SDK for Java (S3)
 
-Verifique as versões:
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* React Router
+* Axios
+* React Leaflet
+* Lucide React
+
+### Infraestrutura
+
+* Docker
+* Docker Compose
+* PostgreSQL
+* LocalStack
+* Amazon S3 (simulado pelo LocalStack)
+
+---
+
+# 📋 Pré-requisitos
+
+Antes de executar o projeto, tenha instalado:
+
+* Git
+* Docker
+* Docker Compose
+
+Java e Gradle **não são necessários para executar a aplicação pelo Docker**, pois o backend é compilado dentro da imagem Docker.
+
+Verifique:
 
 ```bash
-java -version
-docker --version
 git --version
+docker --version
+docker compose version
 ```
 
 ---
 
-# Clonando o projeto
+# 📥 Clonando o projeto
 
 ```bash
 git clone https://github.com/SEU_USUARIO/ExperienceProject.git
@@ -48,189 +73,368 @@ cd ExperienceProject
 
 ---
 
-# Configuração do ambiente
+# ▶️ Executando o projeto
 
-O projeto utiliza:
+O projeto utiliza Docker Compose para iniciar todos os serviços necessários.
 
-- PostgreSQL
-- LocalStack para simular o Amazon S3
-
----
-
-# 1. Iniciar o LocalStack
+Na raiz do projeto, onde está localizado o `docker-compose.yml`, execute:
 
 ```bash
-docker run -d \
-  --name localstack \
-  -p 4566:4566 \
-  -e SERVICES=s3 \
-  -e DEBUG=1 \
-  localstack/localstack
+docker compose up -d --build
 ```
+
+Esse comando irá:
+
+* construir o backend;
+* construir o frontend;
+* iniciar o PostgreSQL;
+* iniciar o LocalStack;
+* iniciar a aplicação backend;
+* iniciar a aplicação frontend.
 
 ---
 
-# 2. Iniciar o PostgreSQL
+# 🐳 Verificando os containers
 
-Caso o container já exista:
-
-```bash
-docker start project-experience-db
-```
-
-Caso ainda não exista, crie o container utilizando sua configuração do PostgreSQL.
-
----
-
-# 3. Criar o bucket S3
-
-Após iniciar o LocalStack execute:
-
-```bash
-docker exec localstack awslocal s3 mb s3://avatares
-```
-
----
-
-# 4. Acessar o banco de dados
-
-Para abrir o terminal do PostgreSQL:
-
-```bash
-docker exec -it project-experience-db psql -U postgres -d project_experience
-```
-
----
-
-# 5. Verificar os containers
+Execute:
 
 ```bash
 docker ps
 ```
 
-Você deverá visualizar containers semelhantes a:
+Os principais containers serão semelhantes a:
 
-- project-experience-db
-- localstack
+```text
+backend
+frontend
+postgres
+localstack
+```
 
----
+Para acompanhar os logs:
 
-# 6. Iniciar containers parados
-
-Caso eles estejam criados mas desligados:
+### Backend
 
 ```bash
-docker start localstack
+docker logs -f backend
+```
 
-docker start project-experience-db
+### Frontend
+
+```bash
+docker logs -f frontend
+```
+
+### PostgreSQL
+
+```bash
+docker logs postgres
+```
+
+### LocalStack
+
+```bash
+docker logs localstack
 ```
 
 ---
 
-# Executando a aplicação
+# 🗄️ Banco de dados
 
-Na raiz do projeto:
+O projeto utiliza PostgreSQL.
 
-```bash
-./gradlew bootRun
+O banco é configurado pelo `docker-compose.yml` e as tabelas são criadas/versionadas automaticamente através do **Liquibase**.
+
+As migrations estão localizadas em:
+
+```text
+backend/src/main/resources/db/changelog/
 ```
 
-ou
+Ao iniciar o backend, o Liquibase executa automaticamente as migrations pendentes.
+
+---
+
+# 🪣 Armazenamento de imagens
+
+O projeto utiliza o **LocalStack** para simular o Amazon S3 localmente.
+
+O bucket utilizado pela aplicação é:
+
+```text
+avatares
+```
+
+Após iniciar os containers, crie o bucket:
 
 ```bash
-gradle bootRun
+docker exec localstack awslocal s3 mb s3://avatares
+```
+
+Verifique:
+
+```bash
+docker exec localstack awslocal s3 ls
+```
+
+O resultado deverá conter:
+
+```text
+avatares
+```
+
+### Ver arquivos armazenados
+
+```bash
+docker exec localstack awslocal s3 ls s3://avatares/ --recursive
+```
+
+As imagens de usuários e atividades são armazenadas nesse bucket.
+
+---
+
+# 🔄 Executando tudo do zero
+
+Caso seja necessário apagar os containers, volumes e banco de dados e começar novamente:
+
+```bash
+docker compose down -v
+```
+
+Depois:
+
+```bash
+docker compose up -d --build
+```
+
+E recrie o bucket:
+
+```bash
+docker exec localstack awslocal s3 mb s3://avatares
+```
+
+> ⚠️ O comando `docker compose down -v` remove os volumes do Docker. Isso significa que os dados do PostgreSQL serão apagados.
+
+---
+
+# 🌐 Acessando a aplicação
+
+### Frontend
+
+```text
+http://localhost:5173
+```
+
+### Backend
+
+```text
+http://localhost:8080
 ```
 
 ---
 
-# Documentação da API
+# 📚 Documentação da API
 
-Após iniciar a aplicação, a documentação estará disponível em:
+Com o backend em execução, a documentação pode ser acessada pelo Swagger.
 
 ### Swagger UI
 
-```
+```text
 http://localhost:8080/swagger-ui/index.html
 ```
 
-### OpenAPI JSON
+### OpenAPI
 
-```
+```text
 http://localhost:8080/v3/api-docs
 ```
 
 ---
 
-# Banco de Dados
+# 🔐 Autenticação
 
-O projeto utiliza:
+A API utiliza autenticação baseada em **JWT**.
 
-- PostgreSQL
-- Liquibase para versionamento do banco
+### 1. Criar usuário
 
-As migrations são executadas automaticamente ao iniciar a aplicação.
-
----
-
-# Armazenamento de arquivos
-
-As imagens de usuários e atividades são armazenadas em um bucket S3 simulado pelo LocalStack.
-
-Bucket utilizado:
-
-```
-avatares
-```
-
----
-
-# Autenticação
-
-A API utiliza autenticação JWT.
-
-Fluxo:
-
-1. Criar usuário
-
-```
+```http
 POST /auth/register
 ```
 
-2. Fazer login
+### 2. Fazer login
 
-```
+```http
 POST /auth/login
 ```
 
-3. Copiar o token JWT retornado.
+Exemplo:
 
-4. Autorizar no Swagger clicando em **Authorize** e informando:
-
+```json
+{
+  "email": "usuario@email.com",
+  "password": "123456"
+}
 ```
-Bearer seu_token
+
+A API retornará um token JWT.
+
+### 3. Utilizar o token
+
+No Swagger, clique em:
+
+```text
+Authorize
+```
+
+E informe:
+
+```text
+Bearer SEU_TOKEN
 ```
 
 ---
 
-# Funcionalidades
+# 🏃 Funcionalidades
 
-- Cadastro de usuários
-- Login JWT
-- Atualização de perfil
-- Upload de avatar
-- Criação de atividades
-- Inscrição em atividades
-- Aprovação de participantes
-- Check-in
-- Conclusão de atividades
-- Sistema de XP
-- Sistema de conquistas
-- Upload de imagens para o S3 (LocalStack)
+## Usuários
+
+* Cadastro de usuários
+* Login
+* Autenticação JWT
+* Atualização de perfil
+* Upload de avatar
+* Sistema de XP
+* Sistema de conquistas
+
+## Atividades
+
+* Criação de atividades
+* Edição de atividades
+* Exclusão de atividades
+* Listagem de atividades
+* Filtragem por tipo
+* Atividades recomendadas
+* Atividades privadas
+* Controle de participantes
+* Aprovação de participantes
+* Inscrição em atividades
+* Check-in
+* Conclusão de atividades
+* Upload de imagens
+
+## Preferências
+
+* Seleção de tipos de atividades
+* Personalização das atividades recomendadas
+
+## Localização
+
+* Seleção de localização das atividades
+* Visualização através de mapa
 
 ---
 
-# Licença
+# 📁 Estrutura do projeto
+
+```text
+ExperienceProject/
+│
+├── backend/
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       └── resources/
+│   │           └── db/
+│   │               └── changelog/
+│   │
+│   ├── build.gradle
+│   ├── Dockerfile
+│   └── gradlew
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── assets/
+│   │   └── types/
+│   │
+│   ├── package.json
+│   ├── Dockerfile
+│   └── vite.config.ts
+│
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+# 🧪 Testando o login
+
+Com a aplicação rodando:
+
+```bash
+curl -i -X POST http://localhost:8080/auth/login \
+-H "Content-Type: application/json" \
+-d '{"email":"usuario@email.com","password":"123456"}'
+```
+
+Uma resposta bem-sucedida deverá retornar `HTTP 200` e um token JWT:
+
+```json
+{
+  "token": "SEU_TOKEN",
+  "id": 1,
+  "name": "usuario",
+  "email": "usuario@email.com"
+}
+```
+
+---
+
+# 🛑 Parando a aplicação
+
+Para parar os containers:
+
+```bash
+docker compose down
+```
+
+Para parar e remover também os volumes:
+
+```bash
+docker compose down -v
+```
+
+---
+
+# ⚠️ Configuração de ambiente
+
+Não envie para o GitHub:
+
+* senhas reais;
+* tokens;
+* chaves secretas;
+* arquivos `.env` contendo credenciais;
+* configurações de produção.
+
+Para desenvolvimento local, utilize variáveis de ambiente ou arquivos de configuração específicos para o ambiente.
+
+---
+
+# 📌 Observações
+
+O ambiente de desenvolvimento utiliza o **LocalStack** para simular o Amazon S3. Portanto, as imagens armazenadas localmente não são enviadas para a AWS real.
+
+O PostgreSQL e o LocalStack são inicializados através do Docker Compose.
+
+As migrations do banco são executadas automaticamente pelo Liquibase quando o backend é iniciado.
+
+---
+
+# 📄 Licença
 
 Projeto desenvolvido para fins acadêmicos.
+
 
 
