@@ -13,11 +13,21 @@ import java.net.URI;
 @Configuration
 @EnableConfigurationProperties(value = {S3Properties.class, JwtProperties.class})
 public class S3Config {
-    @Bean
-    public S3Client s3client(S3Properties properties){
-        return  S3Client.builder().region(Region.of(properties.getRegion())).
-                endpointOverride(URI.create(properties.getEndpoint())).
-                credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(properties.getAccessKey(), properties.getSecretKey()))).
-                forcePathStyle(true).build();
-    }
+@Bean
+public S3Client s3client(S3Properties properties) {
+
+    return S3Client.builder()
+            .region(Region.of(properties.getRegion()))
+            .endpointOverride(URI.create(properties.getEndpoint()))
+            .credentialsProvider(
+                    StaticCredentialsProvider.create(
+                            AwsBasicCredentials.create(
+                                    properties.getAccessKey(),
+                                    properties.getSecretKey()
+                            )
+                    )
+            )
+            .forcePathStyle(true)
+            .build();
+}
 }

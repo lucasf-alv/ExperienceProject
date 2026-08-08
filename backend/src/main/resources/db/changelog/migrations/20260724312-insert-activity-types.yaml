@@ -1,11 +1,9 @@
 databaseChangeLog:
-
   - changeSet:
       id: insert-default-activity-types
       author: lucas
 
       changes:
-
         - insert:
             tableName: activity_type
             columns:
@@ -19,7 +17,6 @@ databaseChangeLog:
                   name: image
                   value: corrida.png
 
-
         - insert:
             tableName: activity_type
             columns:
@@ -28,11 +25,10 @@ databaseChangeLog:
                   value: Ciclismo
               - column:
                   name: description
-                  value: Atividade de ciclismo
+                  value: Passeios e treinos de bicicleta
               - column:
                   name: image
                   value: ciclismo.png
-
 
         - insert:
             tableName: activity_type
@@ -42,7 +38,111 @@ databaseChangeLog:
                   value: Futebol
               - column:
                   name: description
-                  value: Partida de futebol entre participantes
+                  value: Partidas de futebol entre participantes
               - column:
                   name: image
                   value: futebol.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Crossfit
+              - column:
+                  name: description
+                  value: Treinos de CrossFit em grupo
+              - column:
+                  name: image
+                  value: crossfit.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Musculação
+              - column:
+                  name: description
+                  value: Treinos de musculação e academia
+              - column:
+                  name: image
+                  value: musculacao.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Caminhada
+              - column:
+                  name: description
+                  value: Caminhadas ao ar livre
+              - column:
+                  name: image
+                  value: caminhada.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Basquete
+              - column:
+                  name: description
+                  value: Partidas de basquete entre jogadores
+              - column:
+                  name: image
+                  value: basquete.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Vôlei
+              - column:
+                  name: description
+                  value: Jogos de vôlei em grupo
+              - column:
+                  name: image
+                  value: volei.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Yoga
+              - column:
+                  name: description
+                  value: Sessões de yoga e alongamento
+              - column:
+                  name: image
+                  value: yoga.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Natação
+              - column:
+                  name: description
+                  value: Treinos e encontros de natação
+              - column:
+                  name: image
+                  value: natacao.png
+
+        - insert:
+            tableName: activity_type
+            columns:
+              - column:
+                  name: name
+                  value: Tênis
+              - column:
+                  name: description
+                  value: Partidas e treinos de tênis
+              - column:
+                  name: image
+                  value: tenis.png

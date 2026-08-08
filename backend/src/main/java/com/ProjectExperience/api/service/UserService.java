@@ -139,7 +139,7 @@ public class UserService {
             );
 
             String url =
-                    s3Properties.getEndpoint()
+                    s3Properties.getPublicUrl()
                             + "/"
                             + s3Properties.getBucket()
                             + "/"

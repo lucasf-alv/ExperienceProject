@@ -434,11 +434,10 @@ public class ActivityService {
 
             String extension = getExtension(file.getOriginalFilename());
 
-            String photoId =
-                    "activities/"
-                            + "/"
-                            + UUID.randomUUID()
-                            + extension;
+         String photoId =
+        "activities/"
+                + UUID.randomUUID()
+                + extension;
 
             PutObjectRequest request =
                     PutObjectRequest.builder()
@@ -453,7 +452,7 @@ public class ActivityService {
             );
 
             String url =
-                    s3Properties.getEndpoint()
+                    s3Properties.getPublicUrl()
                             + "/"
                             + s3Properties.getBucket()
                             + "/"

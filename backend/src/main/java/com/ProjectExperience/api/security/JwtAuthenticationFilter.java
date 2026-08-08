@@ -1,6 +1,5 @@
+
 package com.ProjectExperience.api.security;
-
-
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,67 +23,73 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserAuthenticationService userAuthenticationService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
+
         String path = request.getServletPath();
 
-
+        // Rotas públicas
         if (path.startsWith("/swagger-ui")
-                || path.startsWith("/api-docs")) {
+                || path.startsWith("/api-docs")
+                || path.startsWith("/v3/api-docs")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-
-        // Header Authorization
         String authHeader = request.getHeader("Authorization");
 
-
-        // Não possui token
+        // Não possui token: deixa o SecurityConfig decidir
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Remove "Bearer "
         String token = authHeader.substring(7);
 
-        // Extrai o e-mail do token
-        String email = jwtService.extractUsername(token);
+        try {
+            String email = jwtService.extractUsername(token);
 
-        // Se ainda não existe usuário autenticado
-        if (email != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (email != null
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userAuthenticationService.loadUserByUsername(email);
+                UserDetails userDetails =
+                        userAuthenticationService.loadUserByUsername(email);
 
-            // Valida token
-            if (jwtService.isTokenValid(token,
-                    (AuthenticatedUser) userDetails)) {
+                if (jwtService.isTokenValid(
+                        token,
+                        (AuthenticatedUser) userDetails)) {
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication);
+                }
             }
+
+        } catch (Exception e) {
+
+            // Token inválido não deve derrubar a aplicação.
+            // Apenas não autentica o usuário.
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
     }
 }
+
 

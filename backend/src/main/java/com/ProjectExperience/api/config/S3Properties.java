@@ -10,6 +10,7 @@ public class S3Properties {
     private String region;
     private String bucket;
     private String endpoint;
+    private String publicUrl;
     private String accessKey;
     private String secretKey;
 }

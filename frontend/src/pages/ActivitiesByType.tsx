@@ -10,6 +10,11 @@ import yogaImg from "../assets/images/yoga.jpeg";
 import CrossfitImg from "../assets/images/crossfit.jpeg";
 import basqueteImg from "../assets/images/basquete.jpg";
 import xadrezImg from "../assets/images/xadrez.jpeg";
+import caminhadaImg from "../assets/images/caminhada.jpg";
+import natacaoImg from "../assets/images/natacao.jpeg";
+import tenisImg from "../assets/images/tenis.jpeg";
+import voleiImg from "../assets/images/volei.png";
+import musculacaoImg from "../assets/images/musculacao.jpeg";
 import { ActivityTypeCard } from "../components/ActivityTypeCard";
 import { RecommendedActivities } from "../components/RecommendedActivities";
 export function ActivitiesByType() {
@@ -23,6 +28,11 @@ export function ActivitiesByType() {
     Crossfit: CrossfitImg,
     Basquete: basqueteImg,
     Xadrez: xadrezImg,
+    Caminhada: caminhadaImg,
+    Natação: natacaoImg,
+    Tênis: tenisImg,
+    Vôlei: voleiImg,
+    Musculação: musculacaoImg,
   };
   useEffect(() => {
     async function loadPreferences() {

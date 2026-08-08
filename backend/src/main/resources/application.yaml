@@ -1,7 +1,6 @@
 spring:
-
   datasource:
-    url: jdbc:postgresql://localhost:5435/project_experience
+    url: jdbc:postgresql://postgres:5432/bootcamp
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -18,21 +17,32 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
+
 aws:
   s3:
     region: us-east-1
     bucket: avatares
-    endpoint: http://localhost:4566
+    endpoint: http://localstack:4566
+    public-url: http://localhost:4566
     accessKey: test
     secretKey: test
+
 app:
   jwt:
-    secret: EIX0nTZL9f6TQ0Yd8eQ4mB+Hf9AnlqkP0Yxv6mI4vUk=
+    secret: "V74gRdzyIA5/qeh1dFdUmfsKbV3pSPqQTT/zXGYBNGY="
     expiration-ms: 86400000
+
 default:
-  avatar: https://localhost.localstack.cloud:4566/project-experience/defaults/default-avatar.png
+  avatar: http://localhost:4566/avatares/defaults/default-avatar.png
+
 springdoc:
   api-docs:
     path: /v3/api-docs
+
   swagger-ui:
     path: /swagger-ui.html
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.ProjectExperience.api: DEBUG
