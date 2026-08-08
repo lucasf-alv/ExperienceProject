@@ -78,6 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder
                             .getContext()
                             .setAuthentication(authentication);
+
                 }
             }
 
@@ -85,7 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Token inválido não deve derrubar a aplicação.
             // Apenas não autentica o usuário.
-            SecurityContextHolder.clearContext();
+
         }
 
         filterChain.doFilter(request, response);

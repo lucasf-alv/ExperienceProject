@@ -152,40 +152,47 @@ public class ActivityService {
     // INSCRIÇÃO
     // ==========================
 
-    public ActivityParticipants subscribeActivity(Long activityId,
-                                                  User loggedUser) {
+public void subscribeActivity(Long activityId, User loggedUser) {
 
-        Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() ->
-                        new RuntimeException("Atividade não encontrada"));
+    Activity activity = activityRepository.findById(activityId)
+            .orElseThrow(() ->
+                    new RuntimeException("Atividade não encontrada"));
 
-        // Lança E7: Usuário já é participante da atividade
-        ActivityParticipants participant = new ActivityParticipants();
-        if (activityParticipantsRepository.existsByActivityIdAndUserId(
-                activityId,
-                loggedUser.getId())) {
+    // E7: Usuário já é participante
+    if (activityParticipantsRepository.existsByActivityIdAndUserId(
+            activityId,
+            loggedUser.getId())) {
 
-            throw new ActivityRegisterError(
-                    "Você já se registrou nessa atividade."
-            );
-        }
-        // Lança E8: O criador não pode se inscrever como participante
-        if (activity.getCreator().getId().equals(loggedUser.getId())) {
-            throw new CreatorParticipantError(
-                    "O criador da atividade não pode se inscrever como participante."
-            );
-        }
-        // Lança E12: Não é possível se inscrever em uma atividade concluida
-        if(activity.getCompleted_At() != null){
-            throw new ActivityCompletedError("Não é possível se inscrever em uma atividade concluida");
-        }
-
-        participant.setActivity(activity);
-        participant.setUser(loggedUser);
-        participant.setApproved(false);
-
-        return activityParticipantsRepository.save(participant);
+        throw new ActivityRegisterError(
+                "Você já se registrou nessa atividade."
+        );
     }
+
+    // E8: Criador não pode participar
+    if (activity.getCreator().getId().equals(loggedUser.getId())) {
+        throw new CreatorParticipantError(
+                "O criador da atividade não pode se inscrever como participante."
+        );
+    }
+
+    // E12: Atividade concluída
+    if (activity.getCompleted_At() != null) {
+        throw new ActivityCompletedError(
+                "Não é possível se inscrever em uma atividade concluída."
+        );
+    }
+
+    ActivityParticipants participant = new ActivityParticipants();
+
+    participant.setActivity(activity);
+    participant.setUser(loggedUser);
+
+    // Se a atividade for privada, precisa aprovação.
+    // Se for pública, já entra aprovado.
+    participant.setApproved(!activity.getPrivate());
+
+    activityParticipantsRepository.save(participant);
+}
 
 
     // ==========================

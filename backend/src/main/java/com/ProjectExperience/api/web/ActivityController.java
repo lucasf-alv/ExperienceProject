@@ -532,7 +532,12 @@ public class ActivityController {
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @PathVariable Long id
     ){
-        return ResponseEntity.ok(activityService.subscribeActivity(id,authenticatedUser.getUser()));
+        activityService.subscribeActivity(
+        id,
+        authenticatedUser.getUser()
+);
+
+return ResponseEntity.ok().build();
     }
     //==========================================================================
     //                ATUALIZA OS DADOS DE UMA ATIVIDADE
